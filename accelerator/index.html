@@ -576,7 +576,183 @@ function switchTab(i) {
   hChart.setOption(heatOpt(i));
 }
 
-window.addEventListener('resize',()=>{ tChart.resize(); hChart.resize(); });
+window.addEventListener('resize',()=>{ tChart.resize(); hChart.resize(); portChart && portChart.resize(); contChart && contChart.resize(); });
+
+// ===== Part 6: 人群画像图表 =====
+let portChart = null, contChart = null;
+
+function initPortraitCharts() {
+  // 年龄分布雷达/柱图
+  const ageEl = document.getElementById('chart-age');
+  if (!ageEl) return;
+  portChart = echarts.init(ageEl);
+  portChart.setOption({
+    backgroundColor:'transparent',
+    tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e8ecf2',borderWidth:1},
+    legend:{data:['跨境工作者','在读留学生','搞钱创业老板'],bottom:0,itemWidth:14,textStyle:{color:'#5c6478',fontSize:11}},
+    grid:{top:12,bottom:52,left:8,right:8,containLabel:true},
+    xAxis:{type:'category',data:['19-22岁','23-25岁','26-30岁','31-35岁','36-40岁'],
+      axisLabel:{color:'#9aa3b5',fontSize:11},axisLine:{lineStyle:{color:'#e8ecf2'}}},
+    yAxis:{type:'value',show:false},
+    series:[
+      {name:'跨境工作者',type:'bar',barMaxWidth:28,data:[22,22,23,14,8],
+        itemStyle:{color:'#2563eb',borderRadius:[4,4,0,0]}},
+      {name:'在读留学生',type:'bar',barMaxWidth:28,data:[40,42,15,1,0],
+        itemStyle:{color:'#7c3aed',borderRadius:[4,4,0,0]}},
+      {name:'搞钱创业老板',type:'bar',barMaxWidth:28,data:[13,18,27,19,12],
+        itemStyle:{color:'#ea580c',borderRadius:[4,4,0,0]}}
+    ]
+  });
+
+  // 内容兴趣雷达
+  const contEl = document.getElementById('chart-content');
+  if (!contEl) return;
+  contChart = echarts.init(contEl);
+  contChart.setOption({
+    backgroundColor:'transparent',
+    tooltip:{trigger:'item'},
+    legend:{data:['跨境工作者','在读留学生','搞钱创业老板'],bottom:0,itemWidth:14,textStyle:{color:'#5c6478',fontSize:11}},
+    radar:{
+      indicator:[
+        {name:'生活记录',max:100},{name:'职场',max:100},{name:'美食',max:100},
+        {name:'娱乐',max:100},{name:'旅行',max:100},{name:'时尚',max:100}
+      ],
+      center:['50%','45%'], radius:'62%',
+      axisName:{color:'#5c6478',fontSize:11},
+      splitLine:{lineStyle:{color:'#e8ecf2'}},
+      axisLine:{lineStyle:{color:'#e8ecf2'}}
+    },
+    series:[{type:'radar',
+      data:[
+        {name:'跨境工作者',value:[52,51,44,40,35,38],
+          lineStyle:{color:'#2563eb',width:2},itemStyle:{color:'#2563eb'},areaStyle:{color:'rgba(37,99,235,.10)'}},
+        {name:'在读留学生',value:[67,32,56,40,48,42],
+          lineStyle:{color:'#7c3aed',width:2},itemStyle:{color:'#7c3aed'},areaStyle:{color:'rgba(124,58,237,.10)'}},
+        {name:'搞钱创业老板',value:[45,68,43,38,28,30],
+          lineStyle:{color:'#ea580c',width:2},itemStyle:{color:'#ea580c'},areaStyle:{color:'rgba(234,88,12,.10)'}},
+      ]
+    }]
+  });
+}
+
+// 延迟初始化（等DOM渲染）
+setTimeout(initPortraitCharts, 200);
 </script>
+
+<!-- Part 6: 目标人群画像 -->
+<div class="section" style="border-top:1px solid var(--border)">
+  <div class="section-header">
+    <span class="section-num">PART 06</span>
+    <div>
+      <div class="section-title">目标人群画像</div>
+      <div class="section-desc">来源：灵犀人群市场真实画像数据 · 3个核心人群包</div>
+    </div>
+  </div>
+
+  <!-- 三张人群卡 -->
+  <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:24px">
+    <style>
+    @media(min-width:680px){.crowd-grid{grid-template-columns:repeat(3,1fr)!important}}
+    .stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .stat-chip{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text-secondary)}
+    .stat-chip b{color:var(--text-primary)}
+    .crowd-seg{font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.6}
+    .tgi-bar{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+    .tgi-label{font-size:11px;color:var(--text-secondary);width:80px;flex-shrink:0}
+    .tgi-track{flex:1;background:var(--bg);border-radius:4px;height:6px}
+    .tgi-fill{height:6px;border-radius:4px}
+    .tgi-val{font-size:10px;font-weight:700;width:36px;text-align:right;flex-shrink:0}
+    </style>
+  </div>
+  <div class="crowd-grid" style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:24px">
+    <!-- 跨境工作者 -->
+    <div class="kw-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="font-size:26px">🌐</div>
+        <div>
+          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">跨境工作者</div>
+          <div style="font-size:11px;color:var(--text-muted)">灵犀人群 #17953099</div>
+        </div>
+        <span style="margin-left:auto;background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">P0 核心</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-chip">女性 <b>76%</b></span>
+        <span class="stat-chip">23-30岁 <b>TGI 188</b></span>
+        <span class="stat-chip">一线+新一线 <b>47%</b></span>
+        <span class="stat-chip">中高消费 <b>95%</b></span>
+      </div>
+      <div class="crowd-seg">内容偏好：生活记录 · 职场 · 美食 ｜ 搜索词亲和力：出海工作、跨境电商、亚马逊运营</div>
+      <div style="margin-top:10px">
+        <div class="tgi-bar"><span class="tgi-label">爆肝青年</span><div class="tgi-track"><div class="tgi-fill" style="width:68%;background:#2563eb"></div></div><span class="tgi-val" style="color:#2563eb">高</span></div>
+        <div class="tgi-bar"><span class="tgi-label">气场精英</span><div class="tgi-track"><div class="tgi-fill" style="width:52%;background:#2563eb"></div></div><span class="tgi-val" style="color:#2563eb">中高</span></div>
+        <div class="tgi-bar"><span class="tgi-label">效能领航员</span><div class="tgi-track"><div class="tgi-fill" style="width:45%;background:#2563eb"></div></div><span class="tgi-val" style="color:#2563eb">中</span></div>
+      </div>
+    </div>
+    <!-- 在读留学生 -->
+    <div class="kw-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="font-size:26px">🎓</div>
+        <div>
+          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">在读留学生</div>
+          <div style="font-size:11px;color:var(--text-muted)">灵犀人群 #17984462</div>
+        </div>
+        <span style="margin-left:auto;background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">P0 核心</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-chip">女性 <b>66%</b></span>
+        <span class="stat-chip">19-25岁 <b>TGI 360</b></span>
+        <span class="stat-chip">现居海外</span>
+        <span class="stat-chip">高消费 <b>TGI 137</b></span>
+      </div>
+      <div class="crowd-seg">内容偏好：海外生活 · 美食探店 · 娱乐 ｜ 搜索词亲和力：墨尔本美食、海外打折、当地生活Vlog</div>
+      <div style="margin-top:10px">
+        <div class="tgi-bar"><span class="tgi-label">自我超越者</span><div class="tgi-track"><div class="tgi-fill" style="width:80%;background:#7c3aed"></div></div><span class="tgi-val" style="color:#7c3aed">高</span></div>
+        <div class="tgi-bar"><span class="tgi-label">娇宠彼得潘</span><div class="tgi-track"><div class="tgi-fill" style="width:65%;background:#7c3aed"></div></div><span class="tgi-val" style="color:#7c3aed">中高</span></div>
+        <div class="tgi-bar"><span class="tgi-label">社会新鲜人</span><div class="tgi-track"><div class="tgi-fill" style="width:55%;background:#7c3aed"></div></div><span class="tgi-val" style="color:#7c3aed">中</span></div>
+      </div>
+    </div>
+    <!-- 搞钱创业老板 -->
+    <div class="kw-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="font-size:26px">💼</div>
+        <div>
+          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">搞钱创业老板</div>
+          <div style="font-size:11px;color:var(--text-muted)">灵犀人群 #17122808</div>
+        </div>
+        <span style="margin-left:auto;background:#fff7ed;color:var(--orange);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">P1 高潜</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-chip">女性 <b>67%</b></span>
+        <span class="stat-chip">26-30岁 <b>TGI 158</b></span>
+        <span class="stat-chip">一线+新一线 <b>45%</b></span>
+        <span class="stat-chip">高消费 <b>TGI 105</b></span>
+      </div>
+      <div class="crowd-seg">内容偏好：职场 · 生活记录 · 美食 ｜ 搜索词亲和力：亚马逊、跨境电商、出海运营</div>
+      <div style="margin-top:10px">
+        <div class="tgi-bar"><span class="tgi-label">未来原住民</span><div class="tgi-track"><div class="tgi-fill" style="width:72%;background:#ea580c"></div></div><span class="tgi-val" style="color:#ea580c">高</span></div>
+        <div class="tgi-bar"><span class="tgi-label">效能领航员</span><div class="tgi-track"><div class="tgi-fill" style="width:52%;background:#ea580c"></div></div><span class="tgi-val" style="color:#ea580c">中高</span></div>
+        <div class="tgi-bar"><span class="tgi-label">高能青年</span><div class="tgi-track"><div class="tgi-fill" style="width:42%;background:#ea580c"></div></div><span class="tgi-val" style="color:#ea580c">中</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图表区 -->
+  <div style="display:grid;grid-template-columns:1fr;gap:16px">
+    <style>@media(min-width:680px){.chart-2col{grid-template-columns:1fr 1fr!important}}</style>
+    <div class="chart-2col" style="display:grid;grid-template-columns:1fr;gap:16px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">年龄分布对比</div>
+        <div class="chart-wrap"><div id="chart-age" style="height:220px;min-width:300px"></div></div>
+        <div class="chart-note">* 纵轴为各年龄段人群占比，仅展示相对分布趋势</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">内容兴趣雷达</div>
+        <div class="chart-wrap"><div id="chart-content" style="height:220px;min-width:280px"></div></div>
+        <div class="chart-note">* 各维度数值为该人群对该内容品类的兴趣占比（相对值）</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
