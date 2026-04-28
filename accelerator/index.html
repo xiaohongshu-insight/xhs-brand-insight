@@ -3,756 +3,628 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>跨境加速器赛道 · 流量洞察看板</title>
+<title>跨境加速器赛道 · 小红书流量洞察</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
+/* ====== DESIGN TOKENS ====== */
 :root {
-  --bg: #f4f6f9;
-  --card: #ffffff;
-  --border: #e8ecf2;
-  --text-primary: #1a1f2e;
-  --text-secondary: #5c6478;
-  --text-muted: #9aa3b5;
-  --accent: #2563eb;
-  --accent-light: #eff6ff;
-  --green: #16a34a;
-  --green-bg: #f0fdf4;
-  --yellow: #d97706;
-  --yellow-bg: #fffbeb;
-  --red: #dc2626;
-  --red-bg: #fef2f2;
-  --orange: #ea580c;
-  --purple: #7c3aed;
-  --radius: 14px;
-  --shadow: 0 2px 12px rgba(0,0,0,.06);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text-primary); font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif; }
+  --bg: #F7F8FC;
+  --surface: #FFFFFF;
+  --border: #EAECF0;
+  --text-1: #101828;
+  --text-2: #344054;
+  --text-3: #667085;
+  --text-4: #98A2B3;
 
-/* ---- header ---- */
+  /* 唯一主色 indigo */
+  --blue:   #3F55E0;
+  --blue-2: #6675E8;
+  --blue-bg:#EEF0FC;
+
+  /* 语义色：只用于信号灯，极克制 */
+  --green:  #12B76A;
+  --green-bg:#ECFDF3;
+  --amber:  #F79009;
+  --amber-bg:#FFFAEB;
+  --red:    #F04438;
+  --red-bg: #FEF3F2;
+
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(16,24,40,.08), 0 1px 2px rgba(16,24,40,.06);
+  --shadow-md: 0 4px 16px rgba(16,24,40,.08);
+}
+
+* { box-sizing: border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text-1); font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif; font-size:14px; line-height:1.6; }
+
+/* ====== HEADER ====== */
 .header {
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 22px 24px 18px;
-  display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:20px 28px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
 }
-.header-left h1 { font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -.3px; }
-.header-left .sub { margin-top: 4px; font-size: 12px; color: var(--text-muted); }
-.badge-new { display: inline-block; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
-.print-btn { background: var(--text-primary); color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: .2px; }
+.header-brand { font-size:11px; font-weight:700; letter-spacing:1.5px; color:var(--text-4); text-transform:uppercase; margin-bottom:4px; }
+.header-title { font-size:20px; font-weight:800; color:var(--text-1); }
+.header-meta { font-size:12px; color:var(--text-3); margin-top:3px; }
+.dl-btn { background:var(--blue); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; letter-spacing:.2px; }
+.dl-btn:hover { background:var(--blue-2); }
 
-/* ---- section ---- */
-.section { padding: 28px 24px; }
-.section + .section { border-top: 1px solid var(--border); }
-.section-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
-.section-num { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-light); padding: 3px 9px; border-radius: 20px; letter-spacing: 1px; }
-.section-title { font-size: 17px; font-weight: 800; color: var(--text-primary); }
-.section-desc { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+/* ====== LAYOUT ====== */
+.page-body { max-width:1100px; margin:0 auto; padding:0; }
+.section { padding:32px 28px; border-bottom:1px solid var(--border); background:var(--surface); }
+.section:nth-child(odd) { background:var(--bg); }
 
-/* ---- signal cards ---- */
-.signal-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-@media(min-width: 600px) { .signal-row { grid-template-columns: repeat(4, 1fr); } }
-.signal-card {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 16px 16px;
-  position: relative; overflow: hidden;
+.sec-label { font-size:10px; font-weight:800; letter-spacing:2px; color:var(--blue); text-transform:uppercase; margin-bottom:8px; }
+.sec-title { font-size:18px; font-weight:800; color:var(--text-1); margin-bottom:4px; }
+.sec-sub { font-size:13px; color:var(--text-3); margin-bottom:24px; }
+
+/* ====== SIGNAL GRID ====== */
+.signal-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:24px; }
+@media(min-width:640px){ .signal-grid{ grid-template-columns:repeat(4,1fr); } }
+
+.sig-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px 16px;
+  box-shadow:var(--shadow);
 }
-.signal-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  border-radius: var(--radius) var(--radius) 0 0;
+.sig-icon { font-size:20px; margin-bottom:12px; }
+.sig-region { font-size:10px; font-weight:700; letter-spacing:1px; color:var(--text-4); text-transform:uppercase; margin-bottom:6px; }
+.sig-pill { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:8px; }
+.pill-blue  { background:var(--blue-bg);  color:var(--blue); }
+.pill-green { background:var(--green-bg); color:var(--green); }
+.pill-amber { background:var(--amber-bg); color:var(--amber); }
+.pill-red   { background:var(--red-bg);   color:var(--red); }
+.pill-dot { width:6px; height:6px; border-radius:50%; }
+.sig-note { font-size:11px; color:var(--text-3); line-height:1.5; }
+
+/* ====== FEED (竞品动态) ====== */
+.feed { display:flex; gap:10px; overflow-x:auto; padding-bottom:2px; -webkit-overflow-scrolling:touch; }
+.feed::-webkit-scrollbar { height:3px; }
+.feed::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+.feed-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  min-width:210px; flex-shrink:0;
+  box-shadow:var(--shadow);
 }
-.sig-green::before { background: var(--green); }
-.sig-yellow::before { background: var(--yellow); }
-.sig-red::before { background: var(--red); }
-.sig-blue::before { background: var(--accent); }
-.signal-icon { font-size: 22px; margin-bottom: 10px; }
-.signal-region { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: .8px; text-transform: uppercase; margin-bottom: 4px; }
-.signal-status { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
-.sig-green .signal-status { color: var(--green); }
-.sig-yellow .signal-status { color: var(--yellow); }
-.sig-red .signal-status { color: var(--red); }
-.sig-blue .signal-status { color: var(--accent); }
-.signal-note { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+.feed-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.feed-brand { font-size:13px; font-weight:700; color:var(--text-1); }
+.feed-tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.ft-warn  { background:var(--red-bg);   color:var(--red); }
+.ft-up    { background:var(--blue-bg);  color:var(--blue); }
+.ft-watch { background:var(--amber-bg); color:var(--amber); }
+.ft-grow  { background:var(--green-bg); color:var(--green); }
+.feed-body { font-size:12px; color:var(--text-3); line-height:1.6; }
 
-/* ---- insight cards ---- */
-.insight-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
-.insight-strip::-webkit-scrollbar { height: 3px; }
-.insight-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.insight-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  min-width: 220px; flex-shrink: 0;
-  box-shadow: var(--shadow);
+/* ====== TABS ====== */
+.tab-row { display:flex; gap:0; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:3px; width:fit-content; margin-bottom:20px; }
+.tab { padding:7px 18px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:none; background:transparent; color:var(--text-3); transition:all .15s; white-space:nowrap; }
+.tab.on { background:var(--surface); color:var(--blue); box-shadow:var(--shadow); }
+
+/* ====== CHARTS ====== */
+.chart-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.c-note { font-size:11px; color:var(--text-4); margin-top:8px; }
+
+/* ====== KW CARDS ====== */
+.kw-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+@media(min-width:480px){ .kw-grid{ grid-template-columns:1fr 1fr; } }
+@media(min-width:900px){ .kw-grid{ grid-template-columns:repeat(4,1fr); } }
+.kw-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
+.kw-name { font-size:13px; font-weight:700; color:var(--text-1); margin-bottom:12px; }
+.bar-row { margin-bottom:7px; }
+.bar-meta { display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px; }
+.bar-brand { color:var(--text-3); }
+.bar-rank { font-weight:700; }
+.bar-bg { background:var(--bg); border-radius:4px; height:5px; }
+.bar-fill { height:5px; border-radius:4px; background:var(--blue); }
+
+/* ====== REGION GRID ====== */
+.region-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+@media(min-width:540px){ .region-grid{ grid-template-columns:1fr 1fr; } }
+@media(min-width:900px){ .region-grid{ grid-template-columns:repeat(3,1fr); } }
+.rc {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+  display:flex; gap:14px; align-items:flex-start;
 }
-.ic-brand { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-.ic-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 12px; }
-.tag-warn { background: #fef2f2; color: var(--red); }
-.tag-alert { background: #fff7ed; color: var(--orange); }
-.tag-info { background: #f0fdf4; color: var(--green); }
-.tag-watch { background: var(--accent-light); color: var(--accent); }
-.ic-text { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+.rc-emoji { font-size:24px; flex-shrink:0; margin-top:2px; }
+.rc-name { font-size:14px; font-weight:700; color:var(--text-1); margin-bottom:3px; }
+.rc-kws { font-size:11px; color:var(--text-4); margin-bottom:8px; }
+.rc-desc { font-size:11px; color:var(--text-3); line-height:1.5; margin-top:6px; }
 
-/* ---- tabs ---- */
-.tab-group { display: flex; gap: 0; margin-bottom: 20px; background: var(--bg); border-radius: 10px; padding: 4px; border: 1px solid var(--border); width: fit-content; }
-.tab-btn { padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-secondary); transition: all .15s; white-space: nowrap; }
-.tab-btn.active { background: var(--card); color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,.10); }
-
-/* ---- charts ---- */
-.chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.chart-box { height: 280px; min-width: 340px; }
-.heat-box { height: 240px; min-width: 500px; }
-.chart-note { font-size: 11px; color: var(--text-muted); margin-top: 10px; }
-
-/* ---- kw grid ---- */
-.kw-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media(min-width: 520px) { .kw-grid { grid-template-columns: 1fr 1fr; } }
-@media(min-width: 900px) { .kw-grid { grid-template-columns: repeat(4, 1fr); } }
-.kw-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: var(--shadow);
-}
-.kw-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
-.kw-row { margin-bottom: 9px; }
-.kw-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
-.kw-name-l { color: var(--text-secondary); }
-.kw-rank { font-weight: 700; font-size: 11px; }
-.bar-bg { background: var(--bg); border-radius: 4px; height: 7px; }
-.bar-fill { height: 7px; border-radius: 4px; }
-
-/* ---- region module ---- */
-.region-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media(min-width: 600px) { .region-grid { grid-template-columns: 1fr 1fr; } }
-@media(min-width: 960px) { .region-grid { grid-template-columns: repeat(3, 1fr); } }
-.region-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: var(--shadow);
-  display: flex; align-items: flex-start; gap: 14px;
-}
-.region-icon { font-size: 26px; flex-shrink: 0; }
-.region-body { flex: 1; min-width: 0; }
-.region-name { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
-.region-kws { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-.region-status { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-.rs-blue { background: var(--accent-light); color: var(--accent); }
-.rs-green { background: var(--green-bg); color: var(--green); }
-.rs-yellow { background: var(--yellow-bg); color: var(--yellow); }
-.region-players { font-size: 11px; color: var(--text-secondary); margin-top: 8px; }
-
-/* ---- action list ---- */
-.action-list { display: flex; flex-direction: column; gap: 10px; }
-.action-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex; align-items: flex-start; gap: 14px;
-  box-shadow: var(--shadow);
-}
-.p-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; flex-shrink: 0; margin-top: 1px; }
-.pb-red { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
-.pb-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #fde68a; }
-.pb-green { background: var(--green-bg); color: var(--green); border: 1px solid #bbf7d0; }
-.action-body { flex: 1; }
-.action-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.action-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
-
-/* ---- insight box ---- */
+/* ====== INSIGHT BOX ====== */
 .insight-box {
-  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
-  border: 1px solid #dbeafe;
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 20px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.8;
+  background:var(--blue-bg);
+  border-left:3px solid var(--blue);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:16px 18px;
+  font-size:13px; color:var(--text-2); line-height:1.8;
+  margin-bottom:20px;
 }
-.insight-box strong { color: var(--text-primary); }
+.insight-box strong { color:var(--text-1); }
 
-@media print { .print-btn { display: none; } }
+/* ====== ACTION LIST ====== */
+.action-list { display:flex; flex-direction:column; gap:10px; }
+.action-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); display:flex; gap:14px; align-items:flex-start; }
+.p-badge { font-size:11px; font-weight:800; padding:4px 10px; border-radius:6px; flex-shrink:0; }
+.pb-red   { background:var(--red-bg);   color:var(--red);   border:1px solid #FEE4E2; }
+.pb-amber { background:var(--amber-bg); color:var(--amber); border:1px solid #FEF0C7; }
+.pb-green { background:var(--green-bg); color:var(--green); border:1px solid #D1FADF; }
+.ac-title { font-size:14px; font-weight:700; color:var(--text-1); margin-bottom:4px; }
+.ac-desc  { font-size:12px; color:var(--text-3); line-height:1.6; }
+
+/* ====== CROWD CARDS ====== */
+.crowd-grid { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:24px; }
+@media(min-width:700px){ .crowd-grid{ grid-template-columns:repeat(3,1fr); } }
+.crowd-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); }
+.cc-head { display:flex; align-items:flex-start; gap:12px; margin-bottom:14px; }
+.cc-emoji { font-size:24px; }
+.cc-name { font-size:14px; font-weight:800; color:var(--text-1); }
+.cc-id { font-size:10px; color:var(--text-4); }
+.cc-badge { margin-left:auto; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+.badge-p0 { background:var(--blue-bg); color:var(--blue); }
+.badge-p1 { background:var(--amber-bg); color:var(--amber); }
+.chip-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.chip { background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:3px 9px; font-size:11px; color:var(--text-2); }
+.chip b { color:var(--blue); }
+.cc-interest { font-size:11px; color:var(--text-3); line-height:1.5; margin-bottom:10px; }
+.tgi-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.tgi-name { font-size:11px; color:var(--text-3); width:72px; flex-shrink:0; }
+.tgi-track { flex:1; background:var(--bg); border-radius:3px; height:4px; }
+.tgi-bar-fill { height:4px; border-radius:3px; background:var(--blue); }
+
+.charts-2col { display:grid; grid-template-columns:1fr; gap:20px; }
+@media(min-width:700px){ .charts-2col{ grid-template-columns:1fr 1fr; } }
+.chart-label { font-size:11px; font-weight:700; color:var(--text-3); letter-spacing:.5px; text-transform:uppercase; margin-bottom:10px; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
+<!-- ===== HEADER ===== -->
 <div class="header">
-  <div class="header-left">
-    <h1>跨境加速器赛道 · 流量洞察看板 <span class="badge-new">2026 Q2</span></h1>
-    <div class="sub">数据更新：2026-04-29 &nbsp;·&nbsp; 覆盖品牌：穿梭 / QuickFox / SIXFAST / UU加速器 / 快帆 / 雷神系 / SpeedX</div>
+  <div>
+    <div class="header-brand">小红书商业化 · 跨境互联网服务</div>
+    <div class="header-title">跨境加速器赛道流量洞察</div>
+    <div class="header-meta">数据更新：2026-04-29 &nbsp;|&nbsp; 覆盖品牌：穿梭 · QuickFox · SIXFAST · UU加速器 · 快帆 · 雷神系 · SpeedX</div>
   </div>
-  <button class="print-btn" onclick="window.print()">下载看板</button>
+  <button class="dl-btn" onclick="window.print()">下载</button>
 </div>
 
-<!-- PART 0: 核心结论 -->
+<div class="page-body">
+
+<!-- ===== S0: 核心结论 ===== -->
 <div class="section">
-  <div class="section-header">
-    <span class="section-num">PART 00</span>
-    <div>
-      <div class="section-title">核心结论一览</div>
-      <div class="section-desc">当前各词组竞争信号灯 + 近期竞品关键动作</div>
+  <div class="sec-label">核心结论</div>
+  <div class="sec-title">赛道信号总览</div>
+  <div class="sec-sub">当前各词组竞争强度 + 近期竞品关键动作</div>
+
+  <div class="signal-grid">
+    <div class="sig-card">
+      <div class="sig-icon">🌏</div>
+      <div class="sig-region">地域词</div>
+      <div class="sig-pill pill-blue"><span class="pill-dot" style="background:var(--blue)"></span>完全真空</div>
+      <div class="sig-note">东南亚/日韩/港台/北美等地域词无任何竞品覆盖</div>
+    </div>
+    <div class="sig-card">
+      <div class="sig-icon">✈️</div>
+      <div class="sig-region">回国加速</div>
+      <div class="sig-pill pill-amber"><span class="pill-dot" style="background:var(--amber)"></span>可切入</div>
+      <div class="sig-note">UU 独占「回国加速」词 96%，「海外回国」词竞争分散可切</div>
+    </div>
+    <div class="sig-card">
+      <div class="sig-icon">🎮</div>
+      <div class="sig-region">游戏加速</div>
+      <div class="sig-pill pill-red"><span class="pill-dot" style="background:var(--red)"></span>竞争激烈</div>
+      <div class="sig-note">雷神系 50%+ 壁垒稳固，短期进入成本高</div>
+    </div>
+    <div class="sig-card">
+      <div class="sig-icon">🏷️</div>
+      <div class="sig-region">品牌词</div>
+      <div class="sig-pill pill-green"><span class="pill-dot" style="background:var(--green)"></span>截流机会</div>
+      <div class="sig-note">穿梭停投后品牌词出现真空，竞品词可低价抢占</div>
     </div>
   </div>
 
-  <div class="signal-row">
-    <div class="signal-card sig-blue">
-      <div class="signal-icon">🌏</div>
-      <div class="signal-region">地域词</div>
-      <div class="signal-status">完全真空</div>
-      <div class="signal-note">马来西亚/泰国/新加坡/日韩等地域词无任何竞品覆盖，CPC极低</div>
+  <div class="feed">
+    <div class="feed-card">
+      <div class="feed-head"><span class="feed-brand">穿梭</span><span class="feed-tag ft-warn">停投</span></div>
+      <div class="feed-body">2025年11–12月高峰后，2026年初几乎清零。品牌词防守真空，是当前截流成本最低的窗口。</div>
     </div>
-    <div class="signal-card sig-green">
-      <div class="signal-icon">✈️</div>
-      <div class="signal-region">回国加速</div>
-      <div class="signal-status">可切入</div>
-      <div class="signal-note">UU加速器独占96%，词位单一，有截流窗口</div>
+    <div class="feed-card">
+      <div class="feed-head"><span class="feed-brand">SIXFAST</span><span class="feed-tag ft-up">4月爆发</span></div>
+      <div class="feed-body">2026-04 SOV 骤升至 ~93%，主力抢占「海外回国加速器」词，新一轮冲量进行中。</div>
     </div>
-    <div class="signal-card sig-red">
-      <div class="signal-icon">🎮</div>
-      <div class="signal-region">游戏加速</div>
-      <div class="signal-status">竞争激烈</div>
-      <div class="signal-note">雷神系50%+ 壁垒稳固，进入成本高</div>
+    <div class="feed-card">
+      <div class="feed-head"><span class="feed-brand">SpeedX</span><span class="feed-tag ft-watch">观察</span></div>
+      <div class="feed-body">2026-02 单月 SOV ~33% 后迅速撤退，测试期结束，下一轮发力时机待观察。</div>
     </div>
-    <div class="signal-card sig-yellow">
-      <div class="signal-icon">🏷️</div>
-      <div class="signal-region">品牌词</div>
-      <div class="signal-status">截流机会</div>
-      <div class="signal-note">穿梭停投后品牌词防守真空，竞品词低价可抢</div>
+    <div class="feed-card">
+      <div class="feed-head"><span class="feed-brand">雷神系</span><span class="feed-tag ft-grow">持续增强</span></div>
+      <div class="feed-body">Q1 游戏词逐月加码，3月 SOV ~17%，多账号协同防守游戏赛道，壁垒完整。</div>
     </div>
-  </div>
-
-  <div class="insight-strip">
-    <div class="insight-card">
-      <div class="ic-brand">穿梭 <span class="ic-tag tag-warn">⚠ 停投</span></div>
-      <div class="ic-text">2025年11-12月高峰投放后，2026年初几乎清零。品牌词防守出现真空，竞品低价可截流。</div>
-    </div>
-    <div class="insight-card">
-      <div class="ic-brand">SIXFAST <span class="ic-tag tag-alert">🚀 爆发</span></div>
-      <div class="ic-text">2026-04 SOV 骤升至 92.9%，重点抢占「海外回国加速器」词，新一轮冲量正在进行中。</div>
-    </div>
-    <div class="insight-card">
-      <div class="ic-brand">SpeedX <span class="ic-tag tag-watch">📡 观察</span></div>
-      <div class="ic-text">2026-02 单月 SOV 32.5% 后迅速撤退至 0.2%。测试期结束，下一轮发力时机待观察。</div>
-    </div>
-    <div class="insight-card">
-      <div class="ic-brand">雷神系 <span class="ic-tag tag-info">📈 增强</span></div>
-      <div class="ic-text">2026年 Q1 游戏加速词逐月增强，3月 SOV 17.1%，游戏场景布防完整，短期难以撼动。</div>
-    </div>
-    <div class="insight-card">
-      <div class="ic-brand">QuickFox <span class="ic-tag tag-warn">⚠ 异动</span></div>
-      <div class="ic-text">持续投放最稳定的品牌，但 2026-04 SOV 骤降至 0.6%，疑似预算断档，密切观察。</div>
+    <div class="feed-card">
+      <div class="feed-head"><span class="feed-brand">QuickFox</span><span class="feed-tag ft-warn">4月异动</span></div>
+      <div class="feed-body">历史上最稳定品牌，但 2026-04 SOV 骤降至 <1%，疑似预算断档，密切关注。</div>
     </div>
   </div>
 </div>
 
-<!-- PART 1: 流量趋势 -->
+<!-- ===== S1: 流量趋势 ===== -->
 <div class="section">
-  <div class="section-header">
-    <span class="section-num">PART 01</span>
-    <div>
-      <div class="section-title">流量趋势预测</div>
-      <div class="section-desc">三条线：去年同期 / 今年实际 / 预测（虚线）</div>
-    </div>
+  <div class="sec-label">Part 01</div>
+  <div class="sec-title">流量趋势预测</div>
+  <div class="sec-sub">三条线：去年同期 / 今年实际 / 预测（虚线）· 点击 Tab 切换词组</div>
+
+  <div class="tab-row" id="tr1">
+    <button class="tab on" onclick="sw(0)">回国加速</button>
+    <button class="tab"    onclick="sw(1)">游戏加速</button>
+    <button class="tab"    onclick="sw(2)">品牌词</button>
   </div>
-  <div class="tab-group" id="tg1">
-    <button class="tab-btn active" onclick="switchTab(0)">回国加速</button>
-    <button class="tab-btn" onclick="switchTab(1)">游戏加速</button>
-    <button class="tab-btn" onclick="switchTab(2)">品牌词</button>
-  </div>
-  <div class="chart-wrap">
-    <div id="chart-trend" class="chart-box"></div>
-  </div>
-  <div class="chart-note">* 纵轴为相对热度指数，最高值=100，仅反映趋势方向，不代表绝对量。预测基于同期季节性规律推算。</div>
+  <div class="chart-wrap"><div id="cTrend" style="height:280px;min-width:340px"></div></div>
+  <div class="c-note">* 纵轴为相对热度指数（最高=100），仅反映趋势，不代表绝对值。预测基于季节性规律推算。</div>
 </div>
 
-<!-- PART 2: 竞品热力图 -->
+<!-- ===== S2: 热力图 ===== -->
 <div class="section">
-  <div class="section-header">
-    <span class="section-num">PART 02</span>
-    <div>
-      <div class="section-title">竞品投放强度热力图</div>
-      <div class="section-desc">颜色深 = SOV 高 = 投放强。无数值，看趋势。</div>
-    </div>
+  <div class="sec-label">Part 02</div>
+  <div class="sec-title">竞品投放强度</div>
+  <div class="sec-sub">颜色越深 = 该品牌在该月 SOV 越高 · 无数值，看趋势与节奏变化</div>
+
+  <div class="tab-row" id="tr2">
+    <button class="tab on" onclick="sw(0)">回国加速</button>
+    <button class="tab"    onclick="sw(1)">游戏加速</button>
+    <button class="tab"    onclick="sw(2)">品牌词</button>
   </div>
-  <div class="tab-group" id="tg2">
-    <button class="tab-btn active" onclick="switchTab(0)">回国加速</button>
-    <button class="tab-btn" onclick="switchTab(1)">游戏加速</button>
-    <button class="tab-btn" onclick="switchTab(2)">品牌词</button>
-  </div>
-  <div class="chart-wrap">
-    <div id="chart-heat" class="heat-box"></div>
-  </div>
-  <div class="chart-note">* Oct25–Apr26 共7个月；品牌含多个账号的已合并为品牌组</div>
+  <div class="chart-wrap"><div id="cHeat" style="height:230px;min-width:500px"></div></div>
+  <div class="c-note">* Oct25–Apr26 共 7 个月；多账号品牌已合并统计</div>
 </div>
 
-<!-- PART 3: 搜索词竞争 -->
+<!-- ===== S3: 词竞争 ===== -->
 <div class="section">
-  <div class="section-header">
-    <span class="section-num">PART 03</span>
-    <div>
-      <div class="section-title">核心词竞争格局</div>
-      <div class="section-desc">各词 TOP 品牌 SOV 占比（近6个月聚合）</div>
-    </div>
-  </div>
-  <div class="kw-grid" id="kw-grid"></div>
+  <div class="sec-label">Part 03</div>
+  <div class="sec-title">核心词竞争格局</div>
+  <div class="sec-sub">各词 TOP 品牌 SOV 占比（近 6 个月聚合）</div>
+  <div class="kw-grid" id="kwGrid"></div>
 </div>
 
-<!-- PART 4: 地域词专项 -->
+<!-- ===== S4: 地域词 ===== -->
 <div class="section">
-  <div class="section-header">
-    <span class="section-num">PART 04</span>
-    <div>
-      <div class="section-title">地域词专项分析</div>
-      <div class="section-desc">各目标市场 VPN / 加速器词投放现状 — 数据显示全面真空</div>
-    </div>
-  </div>
+  <div class="sec-label">Part 04</div>
+  <div class="sec-title">地域词专项 · 全面真空</div>
+  <div class="sec-sub">SOV 数据验证：所有主要目标地域精确词近 6 个月无任何品牌竞价覆盖</div>
+
   <div class="insight-box">
-    从 SOV 数据验证：<strong>马来西亚、泰国、新加坡、印尼、日本、韩国、港台、北美、中东</strong>等各地域 VPN 精确词，近6个月内无任何主流加速器品牌参与竞价。唯一命中的「香港VPN」被一家教育机构意外占据（误投）。这意味着：<strong>地域词是当前最大的蓝海机会</strong>，先布局者可以极低成本锁定词位。
+    验证范围：马来西亚 / 新加坡 / 泰国 / 印尼 / 日本 / 韩国 / 港台 / 北美 / 中东 等各地域 VPN 及加速器精确词。<strong>结论：全部为零竞争蓝海。</strong>唯一命中「香港VPN」词的是一家教育机构（误投），非加速器品牌。地域词是当前 CPC 最低、进入壁垒最小的词位，先布局者将获得持续先发优势。
   </div>
+
   <div class="region-grid">
-    <div class="region-card">
-      <div class="region-icon">🇲🇾</div>
-      <div class="region-body">
-        <div class="region-name">马来西亚</div>
-        <div class="region-kws">马来西亚vpn · 马来西亚加速器</div>
-        <div><span class="region-status rs-blue">零竞争 · 强烈推荐</span></div>
-        <div class="region-players">华人密集，科学上网需求旺盛，消费力强</div>
+    <div class="rc">
+      <div class="rc-emoji">🇲🇾</div>
+      <div>
+        <div class="rc-name">马来西亚</div>
+        <div class="rc-kws">马来西亚vpn · 马来西亚加速器</div>
+        <span class="sig-pill pill-blue" style="font-size:11px">零竞争 · 强推</span>
+        <div class="rc-desc">华人社区密集，科学上网需求旺盛，消费力强</div>
       </div>
     </div>
-    <div class="region-card">
-      <div class="region-icon">🇸🇬</div>
-      <div class="region-body">
-        <div class="region-name">新加坡</div>
-        <div class="region-kws">新加坡vpn · 新加坡回国加速</div>
-        <div><span class="region-status rs-blue">零竞争 · 强烈推荐</span></div>
-        <div class="region-players">华人高收入群体，内容消费意愿极强</div>
+    <div class="rc">
+      <div class="rc-emoji">🇸🇬</div>
+      <div>
+        <div class="rc-name">新加坡</div>
+        <div class="rc-kws">新加坡vpn · 新加坡回国加速</div>
+        <span class="sig-pill pill-blue" style="font-size:11px">零竞争 · 强推</span>
+        <div class="rc-desc">华人高收入群体，内容消费意愿强，付费转化高</div>
       </div>
     </div>
-    <div class="region-card">
-      <div class="region-icon">🇹🇭</div>
-      <div class="region-body">
-        <div class="region-name">泰国</div>
-        <div class="region-kws">泰国vpn · 泰国回国加速</div>
-        <div><span class="region-status rs-green">零竞争 · 推荐</span></div>
-        <div class="region-players">旅居华人增长快，近12个月搜索量上升</div>
+    <div class="rc">
+      <div class="rc-emoji">🇹🇭</div>
+      <div>
+        <div class="rc-name">泰国</div>
+        <div class="rc-kws">泰国vpn · 泰国回国加速</div>
+        <span class="sig-pill pill-green" style="font-size:11px">零竞争 · 推荐</span>
+        <div class="rc-desc">旅居华人增长快，近 12 个月搜索量持续上升</div>
       </div>
     </div>
-    <div class="region-card">
-      <div class="region-icon">🇯🇵</div>
-      <div class="region-body">
-        <div class="region-name">日本</div>
-        <div class="region-kws">日本vpn · 日本回国加速</div>
-        <div><span class="region-status rs-green">零竞争 · 推荐</span></div>
-        <div class="region-players">华人留学生+工作者，需求稳定</div>
+    <div class="rc">
+      <div class="rc-emoji">🇯🇵</div>
+      <div>
+        <div class="rc-name">日本</div>
+        <div class="rc-kws">日本vpn · 日本回国加速</div>
+        <span class="sig-pill pill-green" style="font-size:11px">零竞争 · 推荐</span>
+        <div class="rc-desc">留学生 + 工作者持续增长，需求稳定</div>
       </div>
     </div>
-    <div class="region-card">
-      <div class="region-icon">🇺🇸</div>
-      <div class="region-body">
-        <div class="region-name">北美（华人）</div>
-        <div class="region-kws">美国vpn · 北美回国加速</div>
-        <div><span class="region-status rs-yellow">零竞争 · 需评估</span></div>
-        <div class="region-players">基数大但分散，内容差异化要求高</div>
+    <div class="rc">
+      <div class="rc-emoji">🇺🇸</div>
+      <div>
+        <div class="rc-name">北美华人</div>
+        <div class="rc-kws">美国vpn · 北美回国加速</div>
+        <span class="sig-pill pill-amber" style="font-size:11px">零竞争 · 评估</span>
+        <div class="rc-desc">基数大但用户分散，内容差异化要求高</div>
       </div>
     </div>
-    <div class="region-card">
-      <div class="region-icon">🇭🇰</div>
-      <div class="region-body">
-        <div class="region-name">港台</div>
-        <div class="region-kws">香港vpn · 台湾vpn</div>
-        <div><span class="region-status rs-yellow">弱竞争 · 需评估</span></div>
-        <div class="region-players">香港VPN词有教育机构误投，合规要注意</div>
+    <div class="rc">
+      <div class="rc-emoji">🇭🇰</div>
+      <div>
+        <div class="rc-name">港台</div>
+        <div class="rc-kws">香港vpn · 台湾vpn</div>
+        <span class="sig-pill pill-amber" style="font-size:11px">弱竞争 · 评估</span>
+        <div class="rc-desc">香港 VPN 词有教育机构误投占位，注意合规</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- PART 5: 投放建议 -->
+<!-- ===== S5: 投放建议 ===== -->
 <div class="section">
-  <div class="section-header">
-    <span class="section-num">PART 05</span>
-    <div>
-      <div class="section-title">投放时机建议</div>
-      <div class="section-desc">基于 SOV 趋势 + 季节性规律的优先行动清单</div>
-    </div>
-  </div>
+  <div class="sec-label">Part 05</div>
+  <div class="sec-title">投放时机建议</div>
+  <div class="sec-sub">基于 SOV 趋势 + 季节性规律的优先行动清单</div>
+
   <div class="insight-box">
-    预计 2026 年 <strong>5–6 月</strong>，回国加速词随五一出行旺季进入热度高点；<strong>7–8 月</strong>暑假期间全赛道迎来全年最高峰，留学生开学前「地域词」需求将激增。<strong>东南亚词</strong>目前无竞争，先入场可以极低 CPC 锁定词位优势，建议五一前完成测投布局。
+    预计 <strong>5–6 月</strong>回国加速词随五一出行旺季进入热度高点；<strong>7–8 月</strong>暑假全赛道迎来全年最高峰。东南亚地域词目前零竞争，先入场可以极低 CPC 锁定词位优势，建议<strong>五一前完成首批测投布局</strong>。
   </div>
   <div class="action-list">
-    <div class="action-item">
+    <div class="action-card">
       <span class="p-badge pb-red">P0 立即</span>
-      <div class="action-body">
-        <div class="action-title">🌏 地域词全面布局</div>
-        <div class="action-desc">马来西亚/新加坡/泰国/日本等地域精确词当前零竞争，建议本周内开始测投。CPC 极低，先布局后有先发优势，一旦竞品跟进价格将快速上涨。</div>
-      </div>
+      <div><div class="ac-title">🌏 地域词全面布局</div><div class="ac-desc">马来西亚/新加坡/泰国/日本等词当前零竞争，建议本周内开始测投。CPC 极低，先布局后一旦竞品跟进价格将快速上涨。</div></div>
     </div>
-    <div class="action-item">
+    <div class="action-card">
       <span class="p-badge pb-red">P0 本月</span>
-      <div class="action-body">
-        <div class="action-title">🏷️ 抢占穿梭停投真空</div>
-        <div class="action-desc">穿梭自 2026 年初几乎停投，其品牌词「穿梭加速器」「穿梭」词位防守缺失，竞品截流成本此时最低。建议立即加投竞品品牌词。</div>
-      </div>
+      <div><div class="ac-title">🏷️ 抢占穿梭品牌词真空</div><div class="ac-desc">穿梭自 2026 年初停投，「穿梭加速器」等品牌词防守缺失，竞品截流成本此时最低，建议立即加投。</div></div>
     </div>
-    <div class="action-item">
-      <span class="p-badge pb-yellow">P1 五一前</span>
-      <div class="action-body">
-        <div class="action-title">✈️ 回国加速词插旗</div>
-        <div class="action-desc">「回国加速」词 UU 加速器独占 96%，但「海外回国加速器」词 SIXFAST + QuickFox 竞争分散（各 40%/20%），可低成本切入。建议五一流量高峰前 2 周完成创意和预算准备。</div>
-      </div>
+    <div class="action-card">
+      <span class="p-badge pb-amber">P1 五一前</span>
+      <div><div class="ac-title">✈️ 回国加速词插旗</div><div class="ac-desc">「海外回国加速器」词 SIXFAST + QuickFox 竞争分散（各 ~43%/20%），可低成本切入。建议五一流量高峰前 2 周完成创意和预算准备。</div></div>
     </div>
-    <div class="action-item">
-      <span class="p-badge pb-yellow">P1 暑假前</span>
-      <div class="action-body">
-        <div class="action-title">🎓 留学季地域词加码</div>
-        <div class="action-desc">英美澳日留学生 7–8 月大量出发，「日本vpn」「新加坡vpn」等词搜索量将迎来全年峰值，建议 6 月底前完成创意储备并提高出价。</div>
-      </div>
+    <div class="action-card">
+      <span class="p-badge pb-amber">P1 暑假前</span>
+      <div><div class="ac-title">🎓 留学季地域词加码</div><div class="ac-desc">英美澳日留学生 7–8 月大量出发，「日本vpn」「新加坡vpn」等词将迎来全年搜索峰值，建议 6 月底前提高出价完成创意储备。</div></div>
     </div>
-    <div class="action-item">
+    <div class="action-card">
       <span class="p-badge pb-green">P2 长线</span>
-      <div class="action-body">
-        <div class="action-title">🎮 游戏加速词长线布局</div>
-        <div class="action-desc">雷神系当前壁垒稳固，短期竞争性价比低。建议先以小预算完成创意测试，观察 Q3 旺季竞争变化，待竞争减弱时择机加码。</div>
-      </div>
+      <div><div class="ac-title">🎮 游戏加速词长线布局</div><div class="ac-desc">雷神系壁垒稳固，短期性价比低。建议小预算完成创意测试，Q3 旺季观察竞争变化，待时机成熟加码。</div></div>
     </div>
   </div>
 </div>
+
+<!-- ===== S6: 人群画像 ===== -->
+<div class="section">
+  <div class="sec-label">Part 06</div>
+  <div class="sec-title">目标人群画像</div>
+  <div class="sec-sub">数据来源：灵犀人群市场真实画像 · 3 个核心人群包</div>
+
+  <div class="crowd-grid">
+    <div class="crowd-card">
+      <div class="cc-head">
+        <div class="cc-emoji">🌐</div>
+        <div><div class="cc-name">跨境工作者</div><div class="cc-id">#17953099</div></div>
+        <span class="cc-badge badge-p0">P0 核心</span>
+      </div>
+      <div class="chip-row">
+        <span class="chip">女性 <b>76%</b></span>
+        <span class="chip">23–30岁 TGI <b>188</b></span>
+        <span class="chip">一线+新一线 <b>47%</b></span>
+        <span class="chip">中高消费 <b>95%</b></span>
+      </div>
+      <div class="cc-interest">内容偏好：生活记录 · 职场 · 美食<br>搜索词亲和：亚马逊、出海工作、跨境电商运营</div>
+      <div class="tgi-row"><span class="tgi-name">爆肝青年</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:72%"></div></div></div>
+      <div class="tgi-row"><span class="tgi-name">气场精英</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:55%"></div></div></div>
+      <div class="tgi-row"><span class="tgi-name">效能领航员</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:44%"></div></div></div>
+    </div>
+    <div class="crowd-card">
+      <div class="cc-head">
+        <div class="cc-emoji">🎓</div>
+        <div><div class="cc-name">在读留学生</div><div class="cc-id">#17984462</div></div>
+        <span class="cc-badge badge-p0">P0 核心</span>
+      </div>
+      <div class="chip-row">
+        <span class="chip">女性 <b>66%</b></span>
+        <span class="chip">19–25岁 TGI <b>360</b></span>
+        <span class="chip">现居海外</span>
+        <span class="chip">高消费 TGI <b>137</b></span>
+      </div>
+      <div class="cc-interest">内容偏好：海外生活 · 美食探店 · 娱乐<br>搜索词亲和：墨尔本美食、海外打折、claude</div>
+      <div class="tgi-row"><span class="tgi-name">自我超越者</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:82%"></div></div></div>
+      <div class="tgi-row"><span class="tgi-name">娇宠彼得潘</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:65%"></div></div></div>
+      <div class="tgi-row"><span class="tgi-name">社会新鲜人</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:50%"></div></div></div>
+    </div>
+    <div class="crowd-card">
+      <div class="cc-head">
+        <div class="cc-emoji">💼</div>
+        <div><div class="cc-name">搞钱创业老板</div><div class="cc-id">#17122808</div></div>
+        <span class="cc-badge badge-p1">P1 高潜</span>
+      </div>
+      <div class="chip-row">
+        <span class="chip">女性 <b>67%</b></span>
+        <span class="chip">26–30岁 TGI <b>158</b></span>
+        <span class="chip">一线+新一线 <b>45%</b></span>
+        <span class="chip">高消费 TGI <b>105</b></span>
+      </div>
+      <div class="cc-interest">内容偏好：职场 · 生活记录 · 美食<br>搜索词亲和：亚马逊、跨境卖家、出海运营</div>
+      <div class="tgi-row"><span class="tgi-name">未来原住民</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:70%"></div></div></div>
+      <div class="tgi-row"><span class="tgi-name">效能领航员</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:50%"></div></div></div>
+      <div class="tgi-row"><span class="tgi-name">高能青年</span><div class="tgi-track"><div class="tgi-bar-fill" style="width:40%"></div></div></div>
+    </div>
+  </div>
+
+  <div class="charts-2col">
+    <div>
+      <div class="chart-label">三类人群 · 年龄分布对比</div>
+      <div class="chart-wrap"><div id="cAge" style="height:220px;min-width:300px"></div></div>
+    </div>
+    <div>
+      <div class="chart-label">三类人群 · 内容兴趣雷达</div>
+      <div class="chart-wrap"><div id="cRadar" style="height:220px;min-width:280px"></div></div>
+    </div>
+  </div>
+  <div class="c-note">* 以上数据来源于灵犀人群市场真实画像，已脱敏处理，TGI 数值为相对指数仅供趋势参考。</div>
+</div>
+
+</div><!-- /page-body -->
 
 <script>
 // ===== 数据 =====
 const MONTHS = ['Oct25','Nov25','Dec25','Jan26','Feb26','Mar26','Apr26'];
 const BRANDS = ['穿梭','QuickFox','SIXFAST','UU加速器','雷神系','SpeedX'];
 
-const TREND = {
-  0: { // 回国加速
-    last:   [55,62,58,72,52,60,65,null,null],
-    actual: [60,72,68,88,65,70,78,null,null],
-    pred:   [null,null,null,null,null,null,78,85,92],
-    xAxis:  ['Oct25','Nov25','Dec25','Jan26↗春节','Feb26','Mar26','Apr26','May26↗五一','Jun26']
-  },
-  1: { // 游戏加速
-    last:   [65,78,82,80,65,62,68,null,null],
-    actual: [70,85,90,88,72,68,75,null,null],
-    pred:   [null,null,null,null,null,null,75,80,85],
-    xAxis:  ['Oct25','Nov25','Dec25↗寒假','Jan26','Feb26','Mar26','Apr26','May26','Jun26↗暑假前']
-  },
-  2: { // 品牌词
-    last:   [48,60,55,68,45,52,58,null,null],
-    actual: [55,80,68,75,52,65,42,null,null],
-    pred:   [null,null,null,null,null,null,42,65,75],
-    xAxis:  ['Oct25','Nov25','Dec25','Jan26','Feb26','Mar26','Apr26','May26','Jun26']
-  }
-};
+const TREND = [
+  { xAxis:['Oct25','Nov25','Dec25','Jan26↗春节','Feb26','Mar26','Apr26','May26↗五一','Jun26'],
+    last:[55,62,58,72,52,60,65,null,null], actual:[60,72,68,88,65,70,78,null,null], pred:[null,null,null,null,null,null,78,85,92] },
+  { xAxis:['Oct25','Nov25','Dec25↗寒假','Jan26','Feb26','Mar26','Apr26','May26','Jun26↗暑假前'],
+    last:[65,78,82,80,65,62,68,null,null], actual:[70,85,90,88,72,68,75,null,null], pred:[null,null,null,null,null,null,75,80,85] },
+  { xAxis:['Oct25','Nov25','Dec25','Jan26','Feb26','Mar26','Apr26','May26','Jun26'],
+    last:[48,60,55,68,45,52,58,null,null], actual:[55,80,68,75,52,65,42,null,null], pred:[null,null,null,null,null,null,42,65,75] }
+];
 
-const HEAT = {
-  0: [ // 回国加速词
-    [0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
-    [1,0,35],[1,1,22],[1,2,36],[1,3,65],[1,4,25],[1,5,65],[1,6,4],
-    [2,0,5],[2,1,2],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,43],
-    [3,0,96],[3,1,12],[3,2,90],[3,3,96],[3,4,0],[3,5,0],[3,6,0],
-    [4,0,0],[4,1,0],[4,2,0],[4,3,2],[4,4,5],[4,5,8],[4,6,2],
-    [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,33],[5,5,0],[5,6,0]
-  ],
-  1: [ // 游戏加速词
-    [0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
-    [1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[1,6,0],
-    [2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,0],
-    [3,0,22],[3,1,2],[3,2,22],[3,3,22],[3,4,0],[3,5,0],[3,6,0],
-    [4,0,6],[4,1,5],[4,2,2],[4,3,2],[4,4,12],[4,5,17],[4,6,2],
-    [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,33],[5,5,0],[5,6,0]
-  ],
-  2: [ // 品牌词
-    [0,0,0],[0,1,66],[0,2,44],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
-    [1,0,71],[1,1,22],[1,2,40],[1,3,67],[1,4,29],[1,5,67],[1,6,1],
-    [2,0,5],[2,1,2],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,93],
-    [3,0,16],[3,1,2],[3,2,11],[3,3,16],[3,4,0],[3,5,0],[3,6,0],
-    [4,0,6],[4,1,5],[4,2,2],[4,3,2],[4,4,12],[4,5,17],[4,6,2],
-    [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,33],[5,5,0],[5,6,0]
-  ]
-};
+const HEAT = [
+  [[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
+   [1,0,35],[1,1,22],[1,2,36],[1,3,65],[1,4,25],[1,5,65],[1,6,4],
+   [2,0,5],[2,1,2],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,43],
+   [3,0,96],[3,1,12],[3,2,90],[3,3,96],[3,4,0],[3,5,0],[3,6,0],
+   [4,0,0],[4,1,0],[4,2,0],[4,3,2],[4,4,5],[4,5,8],[4,6,2],
+   [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,33],[5,5,0],[5,6,0]],
+  [[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
+   [1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[1,6,0],
+   [2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,0],
+   [3,0,22],[3,1,2],[3,2,22],[3,3,22],[3,4,0],[3,5,0],[3,6,0],
+   [4,0,6],[4,1,5],[4,2,2],[4,3,2],[4,4,12],[4,5,17],[4,6,2],
+   [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,33],[5,5,0],[5,6,0]],
+  [[0,0,0],[0,1,66],[0,2,44],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
+   [1,0,71],[1,1,22],[1,2,40],[1,3,67],[1,4,29],[1,5,67],[1,6,1],
+   [2,0,5],[2,1,2],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,93],
+   [3,0,16],[3,1,2],[3,2,11],[3,3,16],[3,4,0],[3,5,0],[3,6,0],
+   [4,0,6],[4,1,5],[4,2,2],[4,3,2],[4,4,12],[4,5,17],[4,6,2],
+   [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,33],[5,5,0],[5,6,0]]
+];
 
 const KW_DATA = [
-  {name:'回国加速',       bars:[['UU加速器',96,'#2563eb'],['QuickFox',4,'#7c3aed']]},
-  {name:'海外回国加速器', bars:[['SIXFAST',43,'#ea580c'],['Sixfast助手',37,'#d97706'],['QuickFox',20,'#2563eb']]},
-  {name:'uu加速器',       bars:[['UU加速器',28,'#2563eb'],['雷神系',28,'#dc2626'],['雷神端游',9,'#b91c1c']]},
-  {name:'游戏加速器',     bars:[['雷神系',34,'#dc2626'],['UU加速器',26,'#2563eb'],['雷神端游',15,'#b91c1c']]},
-  {name:'快帆加速器',     bars:[['QuickFox',100,'#7c3aed']]},
-  {name:'QuickFox',       bars:[['QuickFox',85,'#7c3aed'],['其他',15,'#e2e8f0']]},
-  {name:'sixfast',        bars:[['SIXFAST',99,'#ea580c'],['其他',1,'#e2e8f0']]},
-  {name:'vpn推荐',        bars:[['VeryKuai VK',95,'#16a34a'],['其他',5,'#e2e8f0']]}
+  {n:'回国加速',       b:[['UU加速器',96],['QuickFox',4]]},
+  {n:'海外回国加速器', b:[['SIXFAST',43],['Sixfast助手',37],['QuickFox',20]]},
+  {n:'uu加速器',       b:[['UU加速器',28],['雷神系',28],['雷神端游',9]]},
+  {n:'游戏加速器',     b:[['雷神系',34],['UU加速器',26],['雷神端游',15]]},
+  {n:'快帆加速器',     b:[['QuickFox',100]]},
+  {n:'QuickFox',       b:[['QuickFox',85],['其他',15]]},
+  {n:'sixfast',        b:[['SIXFAST',99],['其他',1]]},
+  {n:'vpn推荐',        b:[['VeryKuai VK',95],['其他',5]]}
 ];
 
 // ===== 渲染词卡 =====
-const grid = document.getElementById('kw-grid');
-KW_DATA.forEach(kw => {
-  const el = document.createElement('div');
-  el.className = 'kw-card';
-  let html = `<div class="kw-title">${kw.name}</div>`;
-  kw.bars.forEach(([b, pct, color], i) => {
-    html += `<div class="kw-row">
-      <div class="kw-label">
-        <span class="kw-name-l">${b}</span>
-        <span class="kw-rank" style="color:${color}">#${i+1}</span>
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+const kg = document.getElementById('kwGrid');
+KW_DATA.forEach(({n,b})=>{
+  const el = document.createElement('div'); el.className='kw-card';
+  let h = `<div class="kw-name">${n}</div>`;
+  b.forEach(([brand,pct],i)=>{
+    const opacity = i===0?1:i===1?.7:.5;
+    h += `<div class="bar-row">
+      <div class="bar-meta"><span class="bar-brand">${brand}</span><span class="bar-rank" style="color:var(--blue)">#${i+1}</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;opacity:${opacity}"></div></div>
     </div>`;
   });
-  el.innerHTML = html;
-  grid.appendChild(el);
+  el.innerHTML=h; kg.appendChild(el);
 });
 
 // ===== ECharts =====
-const tChart = echarts.init(document.getElementById('chart-trend'));
-const hChart = echarts.init(document.getElementById('chart-heat'));
+const BLUE='#3F55E0', GRAY='#D0D5DD', AMBER='#F79009';
+const cT = echarts.init(document.getElementById('cTrend'));
+const cH = echarts.init(document.getElementById('cHeat'));
+const cA = echarts.init(document.getElementById('cAge'));
+const cR = echarts.init(document.getElementById('cRadar'));
 
-const COLORS = { last:'#cbd5e1', actual:'#2563eb', pred:'#f59e0b' };
-
-function trendOpt(idx) {
-  const d = TREND[idx];
+function tOpt(i){
+  const d=TREND[i];
   return {
-    backgroundColor: 'transparent',
-    tooltip: { trigger:'axis', backgroundColor:'#fff', borderColor:'#e8ecf2', borderWidth:1, textStyle:{color:'#1a1f2e',fontSize:12},
-      formatter: params => {
-        let s = `<b>${params[0].axisValue}</b><br>`;
-        params.filter(p=>p.value!=null).forEach(p=>{
-          s += `<span style="color:${p.color}">●</span> ${p.seriesName}: 热度指数 ${p.value}<br>`;
-        });
-        return s;
-      }
-    },
-    legend: { data:['去年同期','今年实际','预测'], bottom:0, itemWidth:18, textStyle:{color:'#5c6478',fontSize:12} },
-    grid: { top:16, bottom:52, left:8, right:8, containLabel:true },
-    xAxis: { type:'category', data:d.xAxis, axisLabel:{color:'#9aa3b5',fontSize:10,rotate:d.xAxis.some(x=>x.length>5)?20:0},
-      axisLine:{lineStyle:{color:'#e8ecf2'}}, splitLine:{show:false} },
-    yAxis: { type:'value', show:false, min:0, max:100 },
-    series: [
-      { name:'去年同期', type:'line', data:d.last, smooth:true, symbol:'none',
-        lineStyle:{color:COLORS.last,width:2,type:'dashed'}, connectNulls:false },
-      { name:'今年实际', type:'line', data:d.actual, smooth:true, symbol:'circle', symbolSize:6,
-        lineStyle:{color:COLORS.actual,width:3}, itemStyle:{color:COLORS.actual},
-        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(37,99,235,.12)'},{offset:1,color:'rgba(37,99,235,0)'}]}} },
-      { name:'预测', type:'line', data:d.pred, smooth:true, symbol:'emptyCircle', symbolSize:6,
-        lineStyle:{color:COLORS.pred,width:2.5,type:'dashed'}, itemStyle:{color:COLORS.pred},
-        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(245,158,11,.10)'},{offset:1,color:'rgba(245,158,11,0)'}]}} }
-    ]
-  };
-}
-
-function heatOpt(idx) {
-  return {
-    backgroundColor: 'transparent',
-    tooltip: { formatter: p => `${BRANDS[p.data[0]]}  ·  ${MONTHS[p.data[1]]}<br>投放强度：${p.data[2]<5?'极低':p.data[2]<30?'中等':p.data[2]<65?'较高':'强'}` },
-    grid: { top:8, bottom:36, left:80, right:16 },
-    xAxis: { type:'category', data:MONTHS, axisLabel:{color:'#9aa3b5',fontSize:11}, axisLine:{lineStyle:{color:'#e8ecf2'}} },
-    yAxis: { type:'category', data:BRANDS, axisLabel:{color:'#5c6478',fontSize:12}, axisLine:{lineStyle:{color:'#e8ecf2'}} },
-    visualMap: { min:0, max:100, show:false,
-      inRange:{color:['#f8fafc','#dbeafe','#93c5fd','#3b82f6','#1d4ed8','#1e3a8a']} },
-    series: [{ type:'heatmap', data:HEAT[idx], label:{show:false},
-      emphasis:{itemStyle:{shadowBlur:10,shadowColor:'rgba(0,0,0,.12)'}} }]
-  };
-}
-
-tChart.setOption(trendOpt(0));
-hChart.setOption(heatOpt(0));
-
-// ===== Tab 切换 =====
-let cur = 0;
-function switchTab(i) {
-  cur = i;
-  ['tg1','tg2'].forEach(id=>{
-    document.getElementById(id).querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
-  });
-  tChart.setOption(trendOpt(i));
-  hChart.setOption(heatOpt(i));
-}
-
-window.addEventListener('resize',()=>{ tChart.resize(); hChart.resize(); portChart && portChart.resize(); contChart && contChart.resize(); });
-
-// ===== Part 6: 人群画像图表 =====
-let portChart = null, contChart = null;
-
-function initPortraitCharts() {
-  // 年龄分布雷达/柱图
-  const ageEl = document.getElementById('chart-age');
-  if (!ageEl) return;
-  portChart = echarts.init(ageEl);
-  portChart.setOption({
     backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e8ecf2',borderWidth:1},
-    legend:{data:['跨境工作者','在读留学生','搞钱创业老板'],bottom:0,itemWidth:14,textStyle:{color:'#5c6478',fontSize:11}},
-    grid:{top:12,bottom:52,left:8,right:8,containLabel:true},
-    xAxis:{type:'category',data:['19-22岁','23-25岁','26-30岁','31-35岁','36-40岁'],
-      axisLabel:{color:'#9aa3b5',fontSize:11},axisLine:{lineStyle:{color:'#e8ecf2'}}},
-    yAxis:{type:'value',show:false},
+    tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#EAECF0',borderWidth:1,textStyle:{color:'#101828',fontSize:12}},
+    legend:{data:['去年同期','今年实际','预测'],bottom:0,itemWidth:16,textStyle:{color:'#667085',fontSize:11}},
+    grid:{top:12,bottom:48,left:6,right:6,containLabel:true},
+    xAxis:{type:'category',data:d.xAxis,axisLabel:{color:'#98A2B3',fontSize:10,rotate:d.xAxis.some(x=>x.length>5)?15:0},
+      axisLine:{lineStyle:{color:'#EAECF0'}},splitLine:{show:false}},
+    yAxis:{type:'value',show:false,min:0,max:100},
     series:[
-      {name:'跨境工作者',type:'bar',barMaxWidth:28,data:[22,22,23,14,8],
-        itemStyle:{color:'#2563eb',borderRadius:[4,4,0,0]}},
-      {name:'在读留学生',type:'bar',barMaxWidth:28,data:[40,42,15,1,0],
-        itemStyle:{color:'#7c3aed',borderRadius:[4,4,0,0]}},
-      {name:'搞钱创业老板',type:'bar',barMaxWidth:28,data:[13,18,27,19,12],
-        itemStyle:{color:'#ea580c',borderRadius:[4,4,0,0]}}
+      {name:'去年同期',type:'line',data:d.last,smooth:true,symbol:'none',
+        lineStyle:{color:GRAY,width:1.5,type:'dashed'}},
+      {name:'今年实际',type:'line',data:d.actual,smooth:true,symbol:'circle',symbolSize:5,
+        lineStyle:{color:BLUE,width:2.5},itemStyle:{color:BLUE},
+        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(63,85,224,.12)'},{offset:1,color:'rgba(63,85,224,0)'}]}}},
+      {name:'预测',type:'line',data:d.pred,smooth:true,symbol:'emptyCircle',symbolSize:5,
+        lineStyle:{color:AMBER,width:2,type:'dashed'},itemStyle:{color:AMBER},
+        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(247,144,9,.10)'},{offset:1,color:'rgba(247,144,9,0)'}]}}}
     ]
-  });
-
-  // 内容兴趣雷达
-  const contEl = document.getElementById('chart-content');
-  if (!contEl) return;
-  contChart = echarts.init(contEl);
-  contChart.setOption({
-    backgroundColor:'transparent',
-    tooltip:{trigger:'item'},
-    legend:{data:['跨境工作者','在读留学生','搞钱创业老板'],bottom:0,itemWidth:14,textStyle:{color:'#5c6478',fontSize:11}},
-    radar:{
-      indicator:[
-        {name:'生活记录',max:100},{name:'职场',max:100},{name:'美食',max:100},
-        {name:'娱乐',max:100},{name:'旅行',max:100},{name:'时尚',max:100}
-      ],
-      center:['50%','45%'], radius:'62%',
-      axisName:{color:'#5c6478',fontSize:11},
-      splitLine:{lineStyle:{color:'#e8ecf2'}},
-      axisLine:{lineStyle:{color:'#e8ecf2'}}
-    },
-    series:[{type:'radar',
-      data:[
-        {name:'跨境工作者',value:[52,51,44,40,35,38],
-          lineStyle:{color:'#2563eb',width:2},itemStyle:{color:'#2563eb'},areaStyle:{color:'rgba(37,99,235,.10)'}},
-        {name:'在读留学生',value:[67,32,56,40,48,42],
-          lineStyle:{color:'#7c3aed',width:2},itemStyle:{color:'#7c3aed'},areaStyle:{color:'rgba(124,58,237,.10)'}},
-        {name:'搞钱创业老板',value:[45,68,43,38,28,30],
-          lineStyle:{color:'#ea580c',width:2},itemStyle:{color:'#ea580c'},areaStyle:{color:'rgba(234,88,12,.10)'}},
-      ]
-    }]
-  });
+  };
 }
 
-// 延迟初始化（等DOM渲染）
-setTimeout(initPortraitCharts, 200);
+function hOpt(i){
+  return {
+    backgroundColor:'transparent',
+    tooltip:{formatter:p=>`${BRANDS[p.data[0]]}  ·  ${MONTHS[p.data[1]]}<br>投放强度：${p.data[2]<5?'极低':p.data[2]<30?'中等':p.data[2]<65?'较高':'强'}`},
+    grid:{top:8,bottom:32,left:72,right:12},
+    xAxis:{type:'category',data:MONTHS,axisLabel:{color:'#98A2B3',fontSize:11},axisLine:{lineStyle:{color:'#EAECF0'}}},
+    yAxis:{type:'category',data:BRANDS,axisLabel:{color:'#344054',fontSize:11},axisLine:{lineStyle:{color:'#EAECF0'}}},
+    visualMap:{min:0,max:100,show:false,inRange:{color:['#F7F8FC','#C7D2FB','#818CF8','#4F46E5','#312E81']}},
+    series:[{type:'heatmap',data:HEAT[i],label:{show:false}}]
+  };
+}
+
+cT.setOption(tOpt(0)); cH.setOption(hOpt(0));
+
+// 年龄柱图
+cA.setOption({
+  backgroundColor:'transparent',
+  tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#EAECF0',borderWidth:1,textStyle:{fontSize:12}},
+  legend:{data:['跨境工作者','在读留学生','搞钱创业老板'],bottom:0,itemWidth:12,textStyle:{color:'#667085',fontSize:10}},
+  grid:{top:10,bottom:48,left:6,right:6,containLabel:true},
+  xAxis:{type:'category',data:['19-22','23-25','26-30','31-35','36+'],
+    axisLabel:{color:'#98A2B3',fontSize:11},axisLine:{lineStyle:{color:'#EAECF0'}}},
+  yAxis:{type:'value',show:false},
+  series:[
+    {name:'跨境工作者',type:'bar',barMaxWidth:22,data:[22,22,23,14,8],itemStyle:{color:'#3F55E0',borderRadius:[3,3,0,0]}},
+    {name:'在读留学生',type:'bar',barMaxWidth:22,data:[40,42,15,1,0],itemStyle:{color:'#818CF8',borderRadius:[3,3,0,0]}},
+    {name:'搞钱创业老板',type:'bar',barMaxWidth:22,data:[13,18,27,19,12],itemStyle:{color:'#C7D2FB',borderRadius:[3,3,0,0]}}
+  ]
+});
+
+// 内容兴趣雷达
+cR.setOption({
+  backgroundColor:'transparent',
+  tooltip:{trigger:'item'},
+  legend:{data:['跨境工作者','在读留学生','搞钱创业老板'],bottom:0,itemWidth:12,textStyle:{color:'#667085',fontSize:10}},
+  radar:{
+    indicator:[{name:'生活记录',max:80},{name:'职场',max:80},{name:'美食',max:80},{name:'娱乐',max:80},{name:'旅行',max:80},{name:'时尚',max:80}],
+    center:['50%','44%'],radius:'60%',
+    axisName:{color:'#667085',fontSize:10},
+    splitLine:{lineStyle:{color:'#EAECF0'}},axisLine:{lineStyle:{color:'#EAECF0'}},
+    splitArea:{areaStyle:{color:['#F7F8FC','#fff']}}
+  },
+  series:[{type:'radar',data:[
+    {name:'跨境工作者',value:[52,51,44,40,35,38],
+      lineStyle:{color:'#3F55E0',width:1.5},itemStyle:{color:'#3F55E0'},areaStyle:{color:'rgba(63,85,224,.08)'}},
+    {name:'在读留学生',value:[67,28,56,40,52,44],
+      lineStyle:{color:'#818CF8',width:1.5},itemStyle:{color:'#818CF8'},areaStyle:{color:'rgba(129,140,248,.08)'}},
+    {name:'搞钱创业老板',value:[45,68,43,35,25,28],
+      lineStyle:{color:'#C7D2FB',width:1.5},itemStyle:{color:'#C7D2FB'},areaStyle:{color:'rgba(199,210,251,.15)'}}
+  ]}]
+});
+
+// Tab 切换
+let cur=0;
+function sw(i){
+  cur=i;
+  ['tr1','tr2'].forEach(id=>{
+    document.getElementById(id).querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));
+  });
+  cT.setOption(tOpt(i)); cH.setOption(hOpt(i));
+}
+
+window.addEventListener('resize',()=>[cT,cH,cA,cR].forEach(c=>c.resize()));
 </script>
-
-<!-- Part 6: 目标人群画像 -->
-<div class="section" style="border-top:1px solid var(--border)">
-  <div class="section-header">
-    <span class="section-num">PART 06</span>
-    <div>
-      <div class="section-title">目标人群画像</div>
-      <div class="section-desc">来源：灵犀人群市场真实画像数据 · 3个核心人群包</div>
-    </div>
-  </div>
-
-  <!-- 三张人群卡 -->
-  <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:24px">
-    <style>
-    @media(min-width:680px){.crowd-grid{grid-template-columns:repeat(3,1fr)!important}}
-    .stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .stat-chip{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text-secondary)}
-    .stat-chip b{color:var(--text-primary)}
-    .crowd-seg{font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.6}
-    .tgi-bar{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-    .tgi-label{font-size:11px;color:var(--text-secondary);width:80px;flex-shrink:0}
-    .tgi-track{flex:1;background:var(--bg);border-radius:4px;height:6px}
-    .tgi-fill{height:6px;border-radius:4px}
-    .tgi-val{font-size:10px;font-weight:700;width:36px;text-align:right;flex-shrink:0}
-    </style>
-  </div>
-  <div class="crowd-grid" style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:24px">
-    <!-- 跨境工作者 -->
-    <div class="kw-card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div style="font-size:26px">🌐</div>
-        <div>
-          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">跨境工作者</div>
-          <div style="font-size:11px;color:var(--text-muted)">灵犀人群 #17953099</div>
-        </div>
-        <span style="margin-left:auto;background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">P0 核心</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-chip">女性 <b>76%</b></span>
-        <span class="stat-chip">23-30岁 <b>TGI 188</b></span>
-        <span class="stat-chip">一线+新一线 <b>47%</b></span>
-        <span class="stat-chip">中高消费 <b>95%</b></span>
-      </div>
-      <div class="crowd-seg">内容偏好：生活记录 · 职场 · 美食 ｜ 搜索词亲和力：出海工作、跨境电商、亚马逊运营</div>
-      <div style="margin-top:10px">
-        <div class="tgi-bar"><span class="tgi-label">爆肝青年</span><div class="tgi-track"><div class="tgi-fill" style="width:68%;background:#2563eb"></div></div><span class="tgi-val" style="color:#2563eb">高</span></div>
-        <div class="tgi-bar"><span class="tgi-label">气场精英</span><div class="tgi-track"><div class="tgi-fill" style="width:52%;background:#2563eb"></div></div><span class="tgi-val" style="color:#2563eb">中高</span></div>
-        <div class="tgi-bar"><span class="tgi-label">效能领航员</span><div class="tgi-track"><div class="tgi-fill" style="width:45%;background:#2563eb"></div></div><span class="tgi-val" style="color:#2563eb">中</span></div>
-      </div>
-    </div>
-    <!-- 在读留学生 -->
-    <div class="kw-card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div style="font-size:26px">🎓</div>
-        <div>
-          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">在读留学生</div>
-          <div style="font-size:11px;color:var(--text-muted)">灵犀人群 #17984462</div>
-        </div>
-        <span style="margin-left:auto;background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">P0 核心</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-chip">女性 <b>66%</b></span>
-        <span class="stat-chip">19-25岁 <b>TGI 360</b></span>
-        <span class="stat-chip">现居海外</span>
-        <span class="stat-chip">高消费 <b>TGI 137</b></span>
-      </div>
-      <div class="crowd-seg">内容偏好：海外生活 · 美食探店 · 娱乐 ｜ 搜索词亲和力：墨尔本美食、海外打折、当地生活Vlog</div>
-      <div style="margin-top:10px">
-        <div class="tgi-bar"><span class="tgi-label">自我超越者</span><div class="tgi-track"><div class="tgi-fill" style="width:80%;background:#7c3aed"></div></div><span class="tgi-val" style="color:#7c3aed">高</span></div>
-        <div class="tgi-bar"><span class="tgi-label">娇宠彼得潘</span><div class="tgi-track"><div class="tgi-fill" style="width:65%;background:#7c3aed"></div></div><span class="tgi-val" style="color:#7c3aed">中高</span></div>
-        <div class="tgi-bar"><span class="tgi-label">社会新鲜人</span><div class="tgi-track"><div class="tgi-fill" style="width:55%;background:#7c3aed"></div></div><span class="tgi-val" style="color:#7c3aed">中</span></div>
-      </div>
-    </div>
-    <!-- 搞钱创业老板 -->
-    <div class="kw-card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div style="font-size:26px">💼</div>
-        <div>
-          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">搞钱创业老板</div>
-          <div style="font-size:11px;color:var(--text-muted)">灵犀人群 #17122808</div>
-        </div>
-        <span style="margin-left:auto;background:#fff7ed;color:var(--orange);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">P1 高潜</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-chip">女性 <b>67%</b></span>
-        <span class="stat-chip">26-30岁 <b>TGI 158</b></span>
-        <span class="stat-chip">一线+新一线 <b>45%</b></span>
-        <span class="stat-chip">高消费 <b>TGI 105</b></span>
-      </div>
-      <div class="crowd-seg">内容偏好：职场 · 生活记录 · 美食 ｜ 搜索词亲和力：亚马逊、跨境电商、出海运营</div>
-      <div style="margin-top:10px">
-        <div class="tgi-bar"><span class="tgi-label">未来原住民</span><div class="tgi-track"><div class="tgi-fill" style="width:72%;background:#ea580c"></div></div><span class="tgi-val" style="color:#ea580c">高</span></div>
-        <div class="tgi-bar"><span class="tgi-label">效能领航员</span><div class="tgi-track"><div class="tgi-fill" style="width:52%;background:#ea580c"></div></div><span class="tgi-val" style="color:#ea580c">中高</span></div>
-        <div class="tgi-bar"><span class="tgi-label">高能青年</span><div class="tgi-track"><div class="tgi-fill" style="width:42%;background:#ea580c"></div></div><span class="tgi-val" style="color:#ea580c">中</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 图表区 -->
-  <div style="display:grid;grid-template-columns:1fr;gap:16px">
-    <style>@media(min-width:680px){.chart-2col{grid-template-columns:1fr 1fr!important}}</style>
-    <div class="chart-2col" style="display:grid;grid-template-columns:1fr;gap:16px">
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">年龄分布对比</div>
-        <div class="chart-wrap"><div id="chart-age" style="height:220px;min-width:300px"></div></div>
-        <div class="chart-note">* 纵轴为各年龄段人群占比，仅展示相对分布趋势</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">内容兴趣雷达</div>
-        <div class="chart-wrap"><div id="chart-content" style="height:220px;min-width:280px"></div></div>
-        <div class="chart-note">* 各维度数值为该人群对该内容品类的兴趣占比（相对值）</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
