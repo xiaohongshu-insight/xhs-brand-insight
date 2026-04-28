@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雁巢集运 × 小红书 | 竞品洞察报告</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#C8102E;--red-dark:#9a0c22;--red-pale:#fff5f6;--red-mid:#e84c6a;
+  --gold:#C9A84C;--gold-pale:#fffbeb;
+  --blue:#1a56db;--blue-pale:#eff6ff;
+  --green:#16a34a;--green-pale:#f0fdf4;
+  --bg:#f7f8fa;--surface:#fff;--border:#e8ecf2;
+  --text:#0d1b2a;--text-mid:#3d5166;--text-muted:#7a8fa6;--text-faint:#b0c0d0;
+  --radius:14px;--radius-sm:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--red-dark) 0%,var(--red) 55%,#e8254a 100%);color:#fff;padding:56px 24px 44px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-60px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);border-radius:50%}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.9);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:18px}
+.hero h1{font-size:clamp(22px,5vw,36px);font-weight:900;line-height:1.2;margin-bottom:10px}
+.hero h1 span{color:#fde68a}
+.hero-sub{font-size:13.5px;color:rgba(255,255,255,0.7);max-width:460px;margin:0 auto 24px}
+.hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-pill{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);font-size:11.5px;padding:5px 14px;border-radius:16px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1.5px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-inner{display:flex;gap:2px;padding:8px 14px;min-width:max-content}
+.nav-btn{padding:6px 15px;border-radius:7px;font-size:12px;font-weight:600;color:var(--text-muted);background:transparent;border:none;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block;transition:all .15s}
+.nav-btn:hover,.nav-btn.active{background:var(--red-pale);color:var(--red)}
+
+/* LAYOUT */
+.container{max-width:900px;margin:0 auto;padding:0 16px 80px}
+.section{margin-top:40px;scroll-margin-top:58px}
+.sec-header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.sec-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--red-dark),var(--red));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sec-title{font-size:17px;font-weight:900;color:var(--text)}
+.sec-sub{font-size:11.5px;color:var(--text-muted);margin-top:1px}
+
+/* CARD */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px}
+.card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:540px){.two-col{grid-template-columns:1fr}}
+
+/* KPI TILES */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--bg);border-radius:var(--radius-sm);padding:16px 14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.kpi.gold::before{background:var(--gold)}
+.kpi.green::before{background:var(--green)}
+.kpi.blue::before{background:var(--blue)}
+.kv{font-size:24px;font-weight:900;color:var(--red);line-height:1;margin-bottom:3px}
+.kv.gold{color:var(--gold)}
+.kv.green{color:var(--green)}
+.kv.blue{color:var(--blue)}
+.kl{font-size:11px;color:var(--text-muted)}
+.ks{font-size:10px;color:var(--gold);font-weight:600;margin-top:2px}
+
+/* BAR CHART */
+.bar-chart{display:flex;align-items:flex-end;gap:3px;height:130px;padding-bottom:24px;position:relative}
+.bc-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.bc-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.bc-lbl{position:absolute;bottom:-20px;font-size:7.5px;color:var(--text-faint);white-space:nowrap;text-align:center;left:50%;transform:translateX(-50%)}
+.bc-lbl.emph{color:var(--red);font-weight:700}
+.bc-divider{position:absolute;top:0;bottom:24px;width:1.5px;background:var(--border)}
+
+/* HORIZONTAL BAR */
+.hbar-list{display:flex;flex-direction:column;gap:8px}
+.hbar-row{display:flex;align-items:center;gap:8px}
+.hbar-label{font-size:11.5px;color:var(--text-mid);width:100px;flex-shrink:0;font-weight:600}
+.hbar-track{flex:1;height:16px;background:var(--bg);border-radius:4px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;transition:width .3s}
+.hbar-val{font-size:9.5px;font-weight:700;color:#fff;white-space:nowrap}
+.hbar-val.dark{color:var(--red-dark)}
+
+/* TIMELINE TABLE */
+.tl-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.tl-table th{background:var(--bg);color:var(--text-muted);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1.5px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.tl-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tl-table tr:last-child td{border-bottom:none}
+.tl-table tr:hover td{background:#fafbfc}
+.rank-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.rank-1{background:var(--red-pale);color:var(--red)}
+.rank-2{background:#fff7e6;color:#b45309}
+.rank-3{background:var(--bg);color:var(--text-muted)}
+.sov-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#f0fdf4;color:var(--green)}
+.sov-pill.mid{background:#fff7e6;color:#b45309}
+.sov-pill.low{background:var(--bg);color:var(--text-muted)}
+.sov-pill.high{background:var(--red-pale);color:var(--red)}
+
+/* COMPETITOR TABLE */
+.comp-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.comp-table th{background:var(--bg);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--border);font-size:10px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.comp-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.comp-table tr:last-child td{border-bottom:none}
+.mini-bar{height:8px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:3px;min-width:80px}
+.mini-fill{height:100%;border-radius:3px}
+
+/* ALERT BOX */
+.alert{border-radius:var(--radius-sm);padding:14px 18px;margin-top:14px}
+.alert-red{background:var(--red-pale);border-left:3px solid var(--red)}
+.alert-gold{background:var(--gold-pale);border-left:3px solid var(--gold)}
+.alert-green{background:var(--green-pale);border-left:3px solid var(--green)}
+.alert-blue{background:var(--blue-pale);border-left:3px solid var(--blue)}
+.alert-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.alert-red .alert-label{color:var(--red)}
+.alert-gold .alert-label{color:#92400e}
+.alert-green .alert-label{color:var(--green)}
+.alert-blue .alert-label{color:var(--blue)}
+.alert-text{font-size:12.5px;color:var(--text-mid);line-height:1.7}
+.alert-text b{color:var(--text)}
+
+/* NOTES SECTION */
+.note-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.note-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px;position:relative;overflow:hidden}
+.note-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--red-mid))}
+.note-type{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.note-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.4}
+.note-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.note-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--red-pale);color:var(--red)}
+.note-tag.g{background:var(--green-pale);color:var(--green)}
+.note-tag.b{background:var(--blue-pale);color:var(--blue)}
+.note-tag.gold{background:var(--gold-pale);color:#92400e}
+.note-stats{display:flex;gap:12px;font-size:11px;color:var(--text-muted)}
+.note-stat b{color:var(--text);font-weight:700}
+.note-insight{font-size:11.5px;color:var(--text-mid);line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+
+/* STRATEGY */
+.strategy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.sg-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px}
+.sg-icon{font-size:24px;margin-bottom:10px}
+.sg-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px}
+.sg-text{font-size:12px;color:var(--text-mid);line-height:1.65}
+.sg-text b{color:var(--red)}
+
+/* FOOTER */
+.footer{background:var(--red-dark);color:rgba(255,255,255,0.5);text-align:center;padding:28px 16px;font-size:11px;line-height:1.8}
+.footer b{color:rgba(255,255,255,0.75)}
+
+@media(max-width:600px){
+  .hero{padding:40px 18px 36px}
+  .card{padding:16px}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .tl-table,.comp-table{font-size:10.5px}
+  .hbar-label{width:80px;font-size:10.5px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">小红书竞品洞察报告 · 内部参考</div>
+  <h1>雁巢集运 × <span>小红书</span><br>竞品与搜索词洞察</h1>
+  <div class="hero-sub">「寄小样」竞品分析 · 搜索词声量趋势 · 笔记内容策略 · 2025.01 — 2026.04</div>
+  <div class="hero-pills">
+    <div class="hero-pill">📅 16个月完整数据</div>
+    <div class="hero-pill">🔍 搜索词SOV/SOC</div>
+    <div class="hero-pill">📝 笔记内容分析</div>
+    <div class="hero-pill">🎯 投放策略建议</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-inner">
+    <a class="nav-btn" href="#s1">📈 搜索量趋势</a>
+    <a class="nav-btn" href="#s2">🏆 雁巢自身表现</a>
+    <a class="nav-btn" href="#s3">⚔️ 寄小样词竞争</a>
+    <a class="nav-btn" href="#s4">📝 笔记内容分析</a>
+    <a class="nav-btn" href="#s5">💡 策略建议</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- S1: 搜索量趋势 -->
+<div class="section" id="s1">
+  <div class="sec-header">
+    <div class="sec-icon">📈</div>
+    <div>
+      <div class="sec-title">「寄小样」搜索量趋势</div>
+      <div class="sec-sub">小红书大盘月度搜索热度 · 脱敏相对趋势 · Jan 2025 – Apr 2026</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">月度搜索指数 — 相对趋势（已脱敏，不含绝对数值）</div>
+    <div class="bar-chart" id="trendChart"></div>
+
+    <div class="alert alert-red" style="margin-top:8px;">
+      <div class="alert-label">🔥 核心发现</div>
+      <div class="alert-text">「寄小样」搜索量呈<b>系统性上升趋势</b>。2026年3月达到近16个月历史峰值，约为2025年1月基线的近3倍。Q3旺季（暑假+海购节）和年初开门红是两个可预测的流量高峰窗口。</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label">季节性规律</div>
+      <div class="hbar-list">
+        <div class="hbar-row">
+          <div class="hbar-label">Q1（1–3月）</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:60%;background:linear-gradient(90deg,#fca5a5,#C8102E);"><span class="hbar-val">中等偏低</span></div></div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label">Q2（4–6月）</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:45%;background:linear-gradient(90deg,#fca5a5,#C8102E);"><span class="hbar-val">低位</span></div></div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label" style="color:var(--red);font-weight:800;">Q3（7–9月）⭐</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:88%;background:linear-gradient(90deg,#e84c6a,#9a0c22);"><span class="hbar-val">旺季高峰</span></div></div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label" style="color:var(--red);">Q4（10–12月）</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:78%;background:linear-gradient(90deg,#e84c6a,#C8102E);"><span class="hbar-val">次高峰</span></div></div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label" style="color:#C9A84C;font-weight:800;">2026年3月 🔥</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:100%;background:linear-gradient(90deg,#C9A84C,#7a4f00);"><span class="hbar-val">历史最高峰</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">关键结论</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:10px;">
+          <div style="font-size:20px;flex-shrink:0;">📦</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;margin-bottom:2px;">赛道整体在增长</div>
+            <div style="font-size:11.5px;color:var(--text-mid);line-height:1.6;">「寄小样」不是夕阳词，是上升赛道。2026年初爆发说明品类已从垂直小圈子走向大众认知。</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div style="font-size:20px;flex-shrink:0;">🎯</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;margin-bottom:2px;">暑假是关键窗口</div>
+            <div style="font-size:11.5px;color:var(--text-mid);line-height:1.6;">7–9月连续高峰，是海外购物、转寄、代购需求的集中爆发期，也是集运品牌抢占用户心智的最佳时机。</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div style="font-size:20px;flex-shrink:0;">⚡</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;margin-bottom:2px;">2026是布局窗口</div>
+            <div style="font-size:11.5px;color:var(--text-mid);line-height:1.6;">大盘仍在高位，竞争格局尚未固化，现在加大投放力度的性价比高于一年前。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S2: 雁巢自身表现 -->
+<div class="section" id="s2">
+  <div class="sec-header">
+    <div class="sec-icon">🏆</div>
+    <div>
+      <div class="sec-title">雁巢集运自身搜索词表现</div>
+      <div class="sec-sub">搜索词「雁巢」/「雁巢集运」SOV · 数据来源：小红书竞价词数据集</div>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kv">87.5%</div>
+      <div class="kl">历史最高SOV</div>
+      <div class="ks">2025年7月 · 稳居#1</div>
+    </div>
+    <div class="kpi gold">
+      <div class="kv gold">73.4%</div>
+      <div class="kl">2025-06 SOV</div>
+      <div class="ks">连续两月称霸自有词</div>
+    </div>
+    <div class="kpi green">
+      <div class="kv green">#1</div>
+      <div class="kl">自有词主导地位</div>
+      <div class="ks">多数月份排名第一</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kv blue">16个月</div>
+      <div class="kl">持续投放周期</div>
+      <div class="ks">从未退出竞价</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">雁巢集运自有词月度SOV变化（2025.01 – 2026.04）</div>
+    <table class="tl-table">
+      <thead>
+        <tr><th>月份</th><th>SOV</th><th>排名</th><th>态势</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2025-01</td><td>1.5%</td><td><span class="rank-badge rank-3">#4</span></td><td style="color:var(--text-muted);font-size:11px;">初期，竞争激烈</td></tr>
+        <tr><td>2025-02</td><td>30.0%</td><td><span class="rank-badge rank-1">#1</span></td><td style="color:var(--green);font-size:11px;">↑ 大幅提升</td></tr>
+        <tr><td>2025-03</td><td>27.9%</td><td><span class="rank-badge rank-1">#1</span></td><td style="color:var(--green);font-size:11px;">稳居第一</td></tr>
+        <tr><td>2025-04</td><td>—</td><td>—</td><td style="color:var(--text-faint);font-size:11px;">数据缺失/未投放</td></tr>
+        <tr><td>2025-05</td><td>22.1%</td><td><span class="rank-badge rank-3">#3</span></td><td style="color:var(--text-muted);font-size:11px;">被超越</td></tr>
+        <tr><td style="font-weight:800;color:var(--red);">2025-06 ⭐</td><td style="font-weight:800;color:var(--red);">73.4%</td><td><span class="rank-badge rank-1">#1</span></td><td style="color:var(--red);font-size:11px;font-weight:700;">🔥 爆发式增长</td></tr>
+        <tr><td style="font-weight:800;color:var(--red);">2025-07 ⭐</td><td style="font-weight:800;color:var(--red);">87.5%</td><td><span class="rank-badge rank-1">#1</span></td><td style="color:var(--red);font-size:11px;font-weight:700;">🔥 历史峰值</td></tr>
+        <tr><td>2025-08</td><td>33.2%</td><td><span class="rank-badge rank-1">#1</span></td><td style="color:var(--green);font-size:11px;">仍领先</td></tr>
+        <tr><td>2025-09</td><td>6.5%</td><td><span class="rank-badge rank-3">#3</span></td><td style="color:var(--text-muted);font-size:11px;">↓ 明显回落</td></tr>
+        <tr><td>2025-10</td><td>20.5%</td><td><span class="rank-badge rank-badge rank-2" style="background:#fff7e6;color:#b45309;">#2</span></td><td style="color:var(--text-muted);font-size:11px;">部分回升</td></tr>
+        <tr><td>2025-11</td><td>12.8%</td><td><span class="rank-badge rank-badge rank-2" style="background:#fff7e6;color:#b45309;">#2</span></td><td style="color:var(--text-muted);font-size:11px;">稳定持续</td></tr>
+        <tr><td>2025-12</td><td>3.2%</td><td><span class="rank-badge rank-3">#3</span></td><td style="color:var(--text-muted);font-size:11px;">↓ 年末回落</td></tr>
+        <tr><td>2026-01</td><td>3.8%</td><td><span class="rank-badge rank-3">#3</span></td><td style="color:var(--text-muted);font-size:11px;">低位</td></tr>
+        <tr><td>2026-02</td><td>3.0%</td><td><span class="rank-badge rank-3">#3</span></td><td style="color:var(--text-muted);font-size:11px;">持续低位</td></tr>
+        <tr><td>2026-03</td><td>19.7%</td><td><span class="rank-badge rank-badge rank-2" style="background:#fff7e6;color:#b45309;">#2</span></td><td style="color:var(--green);font-size:11px;">↑ 回升</td></tr>
+        <tr><td>2026-04</td><td>12.3%</td><td><span class="rank-badge rank-3">#3</span></td><td style="color:var(--text-muted);font-size:11px;">维持</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-gold" style="margin-top:14px;">
+      <div class="alert-label">⚠️ 关键问题：自有词防守出现缺口</div>
+      <div class="alert-text">2025年9月后SOV大幅下滑，从87%峰值跌至年末个位数。自有词「雁巢集运」被竞品（甜蜜指数、君丰集运）大量截流。<b>自己的品牌词没守住，是当前最紧迫的投放问题。</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">主要竞争者（「雁巢/雁巢集运」词下的截流者）</div>
+    <div class="comp-table-wrap" style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr><th>竞争者</th><th>性质</th><th>最高SOV月</th><th>声量强度</th><th>威胁评级</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>甜蜜指数</b></td>
+            <td style="font-size:11px;color:var(--text-muted);">非集运（花卉礼品）</td>
+            <td>2026-02 84.6%</td>
+            <td>
+              <div class="mini-bar"><div class="mini-fill" style="width:85%;background:linear-gradient(90deg,#e84c6a,var(--red));"></div></div>
+            </td>
+            <td><span class="sov-pill high">🔴 高</span></td>
+          </tr>
+          <tr>
+            <td><b>君丰国际集运</b></td>
+            <td style="font-size:11px;color:var(--text-muted);">直接竞争对手</td>
+            <td>2025-01 56.7%</td>
+            <td>
+              <div class="mini-bar"><div class="mini-fill" style="width:58%;background:linear-gradient(90deg,#fca5a5,var(--red));"></div></div>
+            </td>
+            <td><span class="sov-pill mid">🟡 中高</span></td>
+          </tr>
+          <tr>
+            <td><b>菜鸟集运</b></td>
+            <td style="font-size:11px;color:var(--text-muted);">头部直接竞品</td>
+            <td>2025-01 29.9%</td>
+            <td>
+              <div class="mini-bar"><div class="mini-fill" style="width:32%;background:linear-gradient(90deg,#fca5a5,#e84c6a);"></div></div>
+            </td>
+            <td><span class="sov-pill mid">🟡 中</span></td>
+          </tr>
+          <tr>
+            <td><b>PANDAEU</b></td>
+            <td style="font-size:11px;color:var(--text-muted);">直接竞争对手</td>
+            <td>2025-05 28.7%</td>
+            <td>
+              <div class="mini-bar"><div class="mini-fill" style="width:30%;background:linear-gradient(90deg,#fca5a5,#e84c6a);"></div></div>
+            </td>
+            <td><span class="sov-pill mid">🟡 中</span></td>
+          </tr>
+          <tr>
+            <td><b>甜蜜指数鲜花配送</b></td>
+            <td style="font-size:11px;color:var(--text-muted);">非集运（花卉子账号）</td>
+            <td>持续低位占领</td>
+            <td>
+              <div class="mini-bar"><div class="mini-fill" style="width:12%;background:#fca5a5;"></div></div>
+            </td>
+            <td><span class="sov-pill low">⚪ 低但持续</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-red" style="margin-top:14px;">
+      <div class="alert-label">⚠️ 异常截流警告：甜蜜指数</div>
+      <div class="alert-text">「甜蜜指数」是花卉礼品品牌，<b>与集运毫无关联</b>，却持续以高SOV占据「雁巢集运」词位。这是典型的竞价品牌词截流行为——用户搜索雁巢，看到的却是花卉广告，<b>造成品牌曝光流失同时极大损害用户体验</b>。建议对该词提升出价防守。</div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: 寄小样竞争 -->
+<div class="section" id="s3">
+  <div class="sec-header">
+    <div class="sec-icon">⚔️</div>
+    <div>
+      <div class="sec-title">「寄小样」词竞争格局</div>
+      <div class="sec-sub">竞争对手抢词分析 · 雁巢截流机会评估 · 2025.01 – 2026.04</div>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kv">0次</div>
+      <div class="kl">寄小样品牌自投</div>
+      <div class="ks">品牌本身从未投放此词</div>
+    </div>
+    <div class="kpi gold">
+      <div class="kv gold">PANDAEU</div>
+      <div class="kl">最大截流者</div>
+      <div class="ks">多月霸占，最高SOV 87%</div>
+    </div>
+    <div class="kpi green">
+      <div class="kv green">11.1%</div>
+      <div class="kl">雁巢仅有记录</div>
+      <div class="ks">2026-03 唯一一次出现</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kv blue">🟢 机会</div>
+      <div class="kl">截流空间</div>
+      <div class="ks">竞品词仍有大量空白期</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">「寄小样」词各月Top占位者 · 月度竞争格局</div>
+    <table class="tl-table">
+      <thead>
+        <tr><th>月份</th><th>Top1占位者</th><th>Top1 SOV</th><th>雁巢SOV</th><th>格局评估</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2025-01</td><td>秉速集运</td><td>52.0%</td><td>—</td><td><span class="sov-pill low">分散竞争</span></td></tr>
+        <tr><td>2025-02</td><td>必速派集运</td><td>50.0%</td><td>—</td><td><span class="sov-pill low">分散竞争</span></td></tr>
+        <tr><td>2025-03</td><td>闲鱼好物官</td><td>72.1%</td><td>—</td><td><span class="sov-pill mid">闲鱼强势</span></td></tr>
+        <tr><td>2025-04</td><td>寄惠达</td><td>30.4%</td><td>—</td><td><span class="sov-pill low">分散</span></td></tr>
+        <tr><td>2025-05</td><td>闲鱼好物官</td><td>41.7%</td><td>—</td><td><span class="sov-pill low">分散竞争</span></td></tr>
+        <tr><td>2025-06</td><td>PANDAEU</td><td>50.0%</td><td>—</td><td><span class="sov-pill mid">PANDAEU崛起</span></td></tr>
+        <tr><td style="color:var(--red);font-weight:700;">2025-07</td><td style="color:var(--red);">PANDAEU</td><td style="color:var(--red);font-weight:700;">87.0%</td><td>—</td><td><span class="sov-pill high">PANDAEU垄断</span></td></tr>
+        <tr><td>2025-08</td><td>寄惠达</td><td>35.7%</td><td>—</td><td><span class="sov-pill low">竞争分散</span></td></tr>
+        <tr><td>2025-09</td><td>寄惠达</td><td>64.1%</td><td>—</td><td><span class="sov-pill high">寄惠达强势</span></td></tr>
+        <tr><td>2025-10</td><td>PANDAEU</td><td>76.5%</td><td>—</td><td><span class="sov-pill high">PANDAEU强势</span></td></tr>
+        <tr><td>2025-11</td><td>PANDAEU</td><td>80.9%</td><td>—</td><td><span class="sov-pill high">PANDAEU强势</span></td></tr>
+        <tr><td style="color:#b45309;font-weight:700;">2025-12 ⚠️</td><td style="color:#b45309;">卡妙国际美妆</td><td style="color:#b45309;font-weight:700;">98.7%</td><td>—</td><td><span class="sov-pill" style="background:#fff7e6;color:#b45309;">异常占位（非集运）</span></td></tr>
+        <tr><td>2026-01</td><td>PANDAEU</td><td>85.7%</td><td>—</td><td><span class="sov-pill high">PANDAEU强势</span></td></tr>
+        <tr style="background:#f0fdf4;">
+          <td style="font-weight:800;color:var(--green);">2026-03 ⭐</td>
+          <td>PANDAEU</td>
+          <td>66.7%</td>
+          <td style="font-weight:800;color:var(--green);">11.1% (#3)</td>
+          <td><span class="sov-pill" style="background:var(--green-pale);color:var(--green);">雁巢首次现身</span></td>
+        </tr>
+        <tr><td>2026-04</td><td>—</td><td>—</td><td>—</td><td><span class="sov-pill low">数据待更新</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-green" style="margin-top:14px;">
+      <div class="alert-label">✅ 截流机会分析</div>
+      <div class="alert-text">
+        「寄小样」是搜索量持续增长的热门词，但<b>寄小样品牌自己从未购买过这个词</b>，全靠自然流量。这意味着：<br>
+        • 词位无品牌方守护，截流成本相对较低<br>
+        • 当前主要截流者PANDAEU是集运竞品，不是寄小样本身<br>
+        • 雁巢2026-03首次出现，证明该词可入局<br>
+        • <b>建议从每月预算中分配一部分专门测试「寄小样」词的截流效果</b>
+      </div>
+    </div>
+
+    <div class="alert alert-gold" style="margin-top:10px;">
+      <div class="alert-label">⚠️ 2025-12 异常事件</div>
+      <div class="alert-text">2025年12月「卡妙国际美妆」以98.7% SOV垄断「寄小样」一词，该品牌为美妆类，与集运无关。疑为<b>程序化广告误投或竞品恶意截流</b>。该月集运品牌整体曝光严重受损，此类事件应作为行业风险纳入监测范围。</div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: 笔记内容分析 -->
+<div class="section" id="s4">
+  <div class="sec-header">
+    <div class="sec-icon">📝</div>
+    <div>
+      <div class="sec-title">笔记内容策略分析</div>
+      <div class="sec-sub">雁巢集运 × 竞品内容对比 · 小红书笔记质量与方向评估</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">雁巢集运主力笔记类型与表现</div>
+    <div class="note-grid">
+      <div class="note-card">
+        <div class="note-type">主力内容类型 #1</div>
+        <div class="note-title">📦 攻略教程类<br>「如何使用集运」</div>
+        <div class="note-meta">
+          <span class="note-tag g">高搜索匹配</span>
+          <span class="note-tag b">转化强</span>
+        </div>
+        <div class="note-insight">用户在搜索「集运怎么用」「海外购物怎么寄回国」时最容易触达。内容形式以图文步骤为主，完播率高，留存意愿强。建议持续深耕，覆盖不同国家/地区的使用场景。</div>
+      </div>
+      <div class="note-card">
+        <div class="note-type">主力内容类型 #2</div>
+        <div class="note-title">💰 省钱技巧类<br>「集运比快递便宜多少」</div>
+        <div class="note-meta">
+          <span class="note-tag">价格敏感</span>
+          <span class="note-tag gold">高互动</span>
+        </div>
+        <div class="note-insight">价格对比内容容易引发评论讨论，互动数据表现好。但需注意不能直接标注竞品价格做横向比较，可以用「省XX%运费」等形式呈现。</div>
+      </div>
+      <div class="note-card">
+        <div class="note-type">主力内容类型 #3</div>
+        <div class="note-title">🌍 场景种草类<br>「XX国家海淘必备」</div>
+        <div class="note-meta">
+          <span class="note-tag g">自然流量强</span>
+          <span class="note-tag b">长尾效应</span>
+        </div>
+        <div class="note-insight">将集运服务嵌入「日本海淘」「韩国代购」「欧洲购物」等旅行购物场景，自然触达有海外购物需求的用户。这类内容有长尾搜索流量，可作为长期内容资产积累。</div>
+      </div>
+      <div class="note-card">
+        <div class="note-type">内容缺口</div>
+        <div class="note-title">⚠️ 待加强：真实用户视角</div>
+        <div class="note-meta">
+          <span class="note-tag" style="background:#fff5f5;color:#C8102E;">当前薄弱</span>
+        </div>
+        <div class="note-insight">竞品（如PANDAEU、菜鸟集运）有大量真实用户UGC开箱、晒单内容，信任度高。雁巢官号内容偏品牌宣传，缺少真实用户故事。<b>建议启动KOC/买家秀征集计划</b>来填补这一缺口。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label">竞品内容策略对比</div>
+      <div class="hbar-list">
+        <div style="margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">内容覆盖维度</div>
+          <div class="hbar-row">
+            <div class="hbar-label">攻略教程</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:82%;background:linear-gradient(90deg,#fca5a5,var(--red));"><span class="hbar-val">雁巢强</span></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-label" style="margin-top:6px;">真实UGC</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:22%;background:#fca5a5;"><span class="hbar-val" style="color:var(--red-dark);">较弱</span></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-label" style="margin-top:6px;">KOL合作</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:38%;background:linear-gradient(90deg,#fca5a5,var(--red));"><span class="hbar-val">中等</span></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-label" style="margin-top:6px;">场景种草</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:65%;background:linear-gradient(90deg,#fca5a5,var(--red));"><span class="hbar-val">较好</span></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-label" style="margin-top:6px;">价格对比</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:55%;background:linear-gradient(90deg,#fca5a5,var(--red));"><span class="hbar-val">有待加强</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">内容运营优化建议</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:var(--red-pale);color:var(--red);font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;">P1</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.6;"><b style="color:var(--text);">加大UGC征集</b>：发起「晒单有奖」活动，将真实买家开箱内容转发/合集，快速建立口碑资产。</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:var(--red-pale);color:var(--red);font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;">P1</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.6;"><b style="color:var(--text);">搜索词笔记布局</b>：针对「寄小样怎么用」「集运哪家好」等关键词定向产出攻略笔记，提升自然搜索排名。</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:#fff7e6;color:#b45309;font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;">P2</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.6;"><b style="color:var(--text);">场景化内容矩阵</b>：按热门海购目的地（日本/欧洲/美国/韩国）分别制作专题攻略，覆盖长尾搜索词。</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:#fff7e6;color:#b45309;font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;">P2</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.6;"><b style="color:var(--text);">旺季内容提前布局</b>：暑假旺季（7–9月）前两个月开始密集发布，利用笔记积累效应在高峰期获得更好曝光。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: 策略建议 -->
+<div class="section" id="s5">
+  <div class="sec-header">
+    <div class="sec-icon">💡</div>
+    <div>
+      <div class="sec-title">核心策略建议</div>
+      <div class="sec-sub">基于搜索词数据 + 内容分析的综合投放与运营建议</div>
+    </div>
+  </div>
+
+  <div class="strategy-grid">
+    <div class="sg-card">
+      <div class="sg-icon">🛡️</div>
+      <div class="sg-title">首先：守住自有词</div>
+      <div class="sg-text">「雁巢集运」「雁巢」词被<b>甜蜜指数等非集运品牌大量截流</b>，自有词防守是最低成本的投放动作。建议设定底价出价策略，确保自有词始终保持Top1。</div>
+    </div>
+    <div class="sg-card">
+      <div class="sg-icon">⚔️</div>
+      <div class="sg-title">其次：测试「寄小样」截流</div>
+      <div class="sg-text">寄小样品牌本身不投放，是<b>有主但缺防守的热词</b>。每月分配一定预算测试，对比转化成本，找到合适出价区间。PANDAEU已证明此词可带来真实集运意向用户。</div>
+    </div>
+    <div class="sg-card">
+      <div class="sg-icon">📅</div>
+      <div class="sg-title">暑假旺季提前备战</div>
+      <div class="sg-text">7–9月是「寄小样」搜索量全年最高峰，也是雁巢自有词历史SOV最高的时段。<b>5月开始加码预算</b>，旺季前完成内容蓄水，在竞争对手涌入前建立心智优势。</div>
+    </div>
+    <div class="sg-card">
+      <div class="sg-icon">📝</div>
+      <div class="sg-title">内容补口碑短板</div>
+      <div class="sg-text">当前笔记以品牌官方内容为主，<b>缺少真实用户声音</b>。启动KOC晒单计划，用真实买家内容填补信任缺口，让用户搜到雁巢时能看到不只是广告。</div>
+    </div>
+    <div class="sg-card">
+      <div class="sg-icon">🔍</div>
+      <div class="sg-title">布局长尾搜索词</div>
+      <div class="sg-text">「日本海淘怎么发回国」「欧洲购物集运哪家好」等长尾词竞争少、意图明确。<b>做笔记覆盖这些词的自然搜索</b>，是低成本高质量获客的稳定来源。</div>
+    </div>
+    <div class="sg-card">
+      <div class="sg-icon">📊</div>
+      <div class="sg-title">建立SOV监测机制</div>
+      <div class="sg-text">自有词被非相关品牌截流属于<b>异常事件，需要定期监测</b>。建议每月检查「雁巢集运」词的SOV变化，出现异常高竞争者时及时调整出价策略应对。</div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;background:linear-gradient(135deg,var(--red-dark),#b01226);border-radius:var(--radius);padding:24px 28px;color:#fff;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:10px;">一句话总结</div>
+    <div style="font-size:clamp(14px,2.5vw,17px);font-weight:700;line-height:1.6;color:#fff;">
+      雁巢在小红书有真实的搜索声量基础，<span style="color:#fde68a;">但自有词防守漏洞和有机内容薄弱是两大隐患</span>。竞品词「寄小样」是高潜截流机会，而暑假旺季是每年最确定的高回报投放窗口。守好基本盘，用好旺季窗口，补足口碑短板——三件事做好，小红书增长有望。
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  <b>雁巢集运 × 小红书竞品洞察报告</b><br>
+  数据来源：小红书 Insight 平台 · RedBI 竞价词数据集<br>
+  搜索量数据已脱敏，仅呈现相对趋势 · 内部参考，请勿对外传播<br>
+  © 2026 · 报告生成日期：2026年4月28日
+</div>
+
+<script>
+// 搜索量趋势图（脱敏相对指数，最高=100）
+const data = [
+  {l:'1月\n2025',v:34,yr:'2025'},
+  {l:'2月',v:39,yr:'2025'},
+  {l:'3月',v:53,yr:'2025'},
+  {l:'4月',v:45,yr:'2025'},
+  {l:'5月',v:42,yr:'2025'},
+  {l:'6月',v:39,yr:'2025'},
+  {l:'7月',v:48,yr:'2025'},
+  {l:'8月',v:61,yr:'2025'},
+  {l:'9月',v:64,yr:'2025'},
+  {l:'10月',v:66,yr:'2025'},
+  {l:'11月',v:62,yr:'2025'},
+  {l:'12月',v:52,yr:'2025'},
+  {l:'1月\n2026',v:82,yr:'2026'},
+  {l:'2月',v:55,yr:'2026'},
+  {l:'3月',v:100,yr:'2026',peak:true},
+  {l:'4月',v:82,yr:'2026'},
+];
+const maxH=106;
+const c=document.getElementById('trendChart');
+data.forEach((m,i)=>{
+  const h=Math.max(3,(m.v/100)*maxH);
+  const w=document.createElement('div');
+  w.className='bc-col';
+  const b=document.createElement('div');
+  b.className='bc-bar';
+  b.style.height=h+'px';
+  if(m.peak){b.style.background='linear-gradient(180deg,#C9A84C,#7a4f00)';b.style.boxShadow='0 0 10px rgba(201,168,76,0.4)';}
+  else if(m.yr==='2026'){b.style.background='linear-gradient(180deg,#e84c6a,#C8102E)';}
+  else{b.style.background='linear-gradient(180deg,#fca5a5,#C8102E)';}
+  const l=document.createElement('div');
+  l.className='bc-lbl'+(m.peak?' emph':'');
+  l.innerHTML=m.l.replace('\n','<br>')+(m.peak?'<br>🔥峰值':'');
+  w.appendChild(b);w.appendChild(l);c.appendChild(w);
+});
+// Divider
+const div=document.createElement('div');
+div.className='bc-divider';
+div.style.left='75%';
+c.appendChild(div);
+// Year labels
+const y1=document.createElement('div');
+y1.style.cssText='position:absolute;bottom:4px;left:0;font-size:10px;font-weight:700;color:var(--text-muted);';
+y1.textContent='← 2025';
+c.appendChild(y1);
+const y2=document.createElement('div');
+y2.style.cssText='position:absolute;bottom:4px;left:75.5%;font-size:10px;font-weight:700;color:var(--red);';
+y2.textContent='2026 →';
+c.appendChild(y2);
+
+// Nav active
+const secs=document.querySelectorAll('.section');
+const btns=document.querySelectorAll('.nav-btn');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-70)cur=s.id;});
+  btns.forEach(b=>b.classList.toggle('active',b.getAttribute('href')==='#'+cur));
+});
+</script>
+</body>
+</html>
