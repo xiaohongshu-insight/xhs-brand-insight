@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carlsberg × XHS | Thailand Beer Insight 2025–2026</title>
+<style>
+/* ============================
+   RESET & BASE
+============================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --green-dark: #003d20;
+  --green: #006B3E;
+  --green-mid: #16a34a;
+  --green-light: #4ade80;
+  --green-pale: #dcfce7;
+  --gold-dark: #7a4f00;
+  --gold: #C9A84C;
+  --gold-light: #fbbf24;
+  --gold-pale: #fffbeb;
+  --blue: #2563eb;
+  --blue-pale: #eff6ff;
+  --red: #dc2626;
+  --red-pale: #fff5f5;
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --border: #e8ecf1;
+  --text: #0f1e30;
+  --text-mid: #384d60;
+  --text-muted: #8a9bb0;
+  --text-faint: #b0bec5;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ============================
+   HEADER
+============================ */
+.hero {
+  background: linear-gradient(135deg, var(--green-dark) 0%, #006B3E 60%, #0a8a52 100%);
+  color: #fff;
+  padding: 56px 24px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(201,168,76,0.2);
+  border: 1px solid rgba(201,168,76,0.5);
+  color: #fde68a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: clamp(24px, 5vw, 38px);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: var(--gold-light); }
+.hero-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  max-width: 480px;
+  margin: 0 auto 24px;
+}
+.hero-meta {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.08);
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+/* ============================
+   NAV
+============================ */
+.nav-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-inner {
+  display: flex;
+  gap: 2px;
+  padding: 8px 16px;
+  min-width: max-content;
+}
+.nav-btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: var(--green-pale);
+  color: var(--green);
+}
+
+/* ============================
+   LAYOUT
+============================ */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+.section {
+  margin-top: 40px;
+  scroll-margin-top: 60px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.section-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.section-title { font-size: 18px; font-weight: 900; color: var(--text); }
+.section-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* ============================
+   S1: SEARCH TREND
+============================ */
+.trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 140px;
+  padding-bottom: 28px;
+  position: relative;
+}
+.trend-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  position: relative;
+}
+.trend-bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: opacity 0.2s;
+  min-height: 4px;
+}
+.trend-bar:hover { opacity: 0.8; }
+.trend-bar-lbl {
+  position: absolute;
+  bottom: -22px;
+  font-size: 8px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.trend-bar-lbl.emph { color: var(--gold); font-weight: 700; }
+/* Divider line */
+.trend-divider {
+  position: absolute;
+  top: 0; bottom: 28px;
+  width: 1.5px;
+  background: var(--border);
+  left: 75%; /* after 12 of 16 bars */
+}
+.trend-year-label {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  bottom: 4px;
+}
+.trend-year-label.y25 { left: 0; }
+.trend-year-label.y26 { left: 75.5%; }
+
+/* Annotation callouts */
+.callout-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.callout-pill {
+  flex: 1;
+  min-width: 140px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  border-left: 3px solid var(--green);
+}
+.callout-pill.gold { border-color: var(--gold); }
+.callout-pill.blue { border-color: var(--blue); }
+.cp-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+.cp-val { font-size: 15px; font-weight: 900; color: var(--green); }
+.cp-val.gold { color: var(--gold); }
+.cp-val.blue { color: var(--blue); }
+.cp-desc { font-size: 11px; color: var(--text-mid); margin-top: 2px; }
+
+/* ============================
+   S2: CONSUMER PORTRAIT
+============================ */
+.portrait-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.kpi-tile {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 16px 14px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-tile::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--green);
+}
+.kpi-tile.gold::before { background: var(--gold); }
+.kpi-tile.blue::before { background: var(--blue); }
+.kt-icon { font-size: 22px; margin-bottom: 6px; }
+.kt-val { font-size: 26px; font-weight: 900; color: var(--green); line-height: 1; }
+.kt-val.gold { color: var(--gold); }
+.kt-val.blue { color: var(--blue); }
+.kt-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.kt-sub { font-size: 10px; color: var(--gold); font-weight: 600; margin-top: 2px; }
+
+/* Age / City bars */
+.bar-list { display: flex; flex-direction: column; gap: 8px; }
+.bl-row { display: flex; align-items: center; gap: 8px; }
+.bl-label { font-size: 11.5px; color: var(--text-mid); width: 80px; flex-shrink: 0; }
+.bl-track { flex: 1; height: 14px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
+.bl-fill { height: 100%; border-radius: 4px; position: relative; }
+.bl-fill-label { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 9px; font-weight: 700; color: #fff; white-space: nowrap; }
+.bl-fill-label.dark { color: var(--green-dark); right: auto; left: 6px; }
+
+/* Portrait two-col */
+.portrait-two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:540px) { .portrait-two { grid-template-columns: 1fr; } }
+
+/* Donut */
+.donut-wrap { display: flex; align-items: center; gap: 16px; }
+.donut-legend { flex: 1; }
+.dl { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.dl-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.dl-name { font-size: 11.5px; color: var(--text-mid); flex: 1; }
+.dl-val { font-size: 12px; font-weight: 700; color: var(--text); }
+
+/* ============================
+   S3: LIFESTYLE WORDCLOUD
+============================ */
+.cloud-area {
+  background: linear-gradient(135deg, #f8fffe 0%, #f0faf5 50%, #fffdf3 100%);
+  border: 1.5px solid #d4e8dc;
+  border-radius: var(--radius);
+  padding: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+.cloud-tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.cloud-tag .sub { font-size: 9px; font-weight: 600; opacity: 0.75; margin-top: 1px; }
+.ct-s5 { background: #003d20; color: #fff; font-size: 22px; box-shadow: 0 4px 14px rgba(0,61,32,0.25); }
+.ct-g5 { background: #7a4f00; color: #fff; font-size: 20px; box-shadow: 0 4px 14px rgba(122,79,0,0.28); }
+.ct-s4 { background: #006B3E; color: #fff; font-size: 17px; }
+.ct-g4 { background: #C9A84C; color: #3d2800; font-size: 16px; }
+.ct-s3 { background: #16a34a; color: #fff; font-size: 14px; }
+.ct-g3 { background: #fbbf24; color: #3d2800; font-size: 13px; }
+.ct-s2 { background: #bbf7d0; color: #065f46; font-size: 12px; }
+.ct-g2 { background: #fde68a; color: #5a3a00; font-size: 11px; }
+.ct-s1 { background: #f0faf5; color: var(--green); font-size: 11px; border: 1px solid #c6f0dc; }
+
+.cloud-legend {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+.cl-swatch { width: 14px; height: 8px; border-radius: 3px; }
+
+/* Insight box */
+.insight-box {
+  background: var(--gold-pale);
+  border: 1.5px solid #fde68a;
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+.ib-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-dark); margin-bottom: 6px; }
+.ib-text { font-size: 13px; color: var(--text-mid); line-height: 1.7; }
+.ib-text b { color: var(--text); }
+
+/* ============================
+   S4: COMPETITIVE SOV
+============================ */
+.sov-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: center; }
+@media(max-width:540px) { .sov-wrap { grid-template-columns: 1fr; } }
+
+.sov-bars { display: flex; flex-direction: column; gap: 10px; }
+.sov-row { display: flex; align-items: center; gap: 10px; }
+.sov-brand { font-size: 12px; font-weight: 600; color: var(--text-mid); width: 110px; flex-shrink: 0; }
+.sov-track { flex: 1; height: 22px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+.sov-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; }
+.sov-fill-lbl { font-size: 10px; font-weight: 700; color: #fff; }
+
+.sov-donut-area { display: flex; flex-direction: column; align-items: center; }
+.sov-donut-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+.sov-alert {
+  background: var(--red-pale);
+  border: 1.5px solid #fca5a5;
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+.sa-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--red); margin-bottom: 5px; }
+.sa-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.65; }
+.sa-text b { color: var(--text); }
+
+/* ============================
+   S5: AUDIENCE SEGMENTS
+============================ */
+.seg-list { display: flex; flex-direction: column; gap: 10px; }
+.seg-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+.seg-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.sc-p1::before { background: linear-gradient(180deg, var(--green-dark), var(--green-light)); }
+.sc-p2::before { background: linear-gradient(180deg, var(--gold-dark), var(--gold-light)); }
+.sc-p4::before { background: linear-gradient(180deg, #1a3fa0, #60a5fa); }
+
+.seg-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 54px;
+}
+.sb-icon { font-size: 24px; line-height: 1; margin-bottom: 3px; }
+.sb-p { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 2px 6px; border-radius: 4px; }
+.sb-p.p1 { background: var(--green-pale); color: var(--green); }
+.sb-p.p2 { background: #fef9e7; color: var(--gold-dark); }
+.sb-p.p4 { background: var(--blue-pale); color: var(--blue); }
+
+.seg-body { flex: 1; }
+.sb-name { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.sb-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.stag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.stag-g { background: var(--green-pale); color: var(--green); }
+.stag-gold { background: #fffdf3; color: var(--gold-dark); border: 1px solid #fde68a; }
+.stag-b { background: var(--blue-pale); color: var(--blue); }
+.sb-desc { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+.sb-desc b { color: var(--text); }
+.sb-strategy { font-size: 11px; color: var(--text-muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.sb-strategy b { color: var(--green); }
+.sb-strategy.gold b { color: var(--gold-dark); }
+.sb-strategy.blue b { color: var(--blue); }
+
+/* Priority meter */
+.seg-meter { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
+.sm-label { font-size: 9px; color: var(--text-faint); text-align: center; line-height: 1.3; }
+.sm-bar-wrap { width: 8px; height: 60px; background: var(--bg); border-radius: 4px; overflow: hidden; margin: 4px 0; }
+.sm-bar { width: 100%; border-radius: 4px; }
+
+/* ============================
+   S6: KEY INSIGHTS SUMMARY
+============================ */
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.ig-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 16px;
+}
+.ig-icon { font-size: 26px; margin-bottom: 10px; }
+.ig-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.ig-text { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+.ig-text b { color: var(--green); }
+
+/* ============================
+   FOOTER
+============================ */
+.footer {
+  background: var(--green-dark);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 28px 16px;
+  font-size: 11.5px;
+  line-height: 1.8;
+}
+.footer b { color: rgba(255,255,255,0.75); }
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media(max-width:640px) {
+  .hero { padding: 40px 20px 36px; }
+  .card { padding: 18px; }
+  .portrait-grid { grid-template-columns: repeat(2, 1fr); }
+  .trend-bar-lbl { font-size: 7px; }
+  .seg-meter { display: none; }
+}
+@media(max-width:380px) {
+  .portrait-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<div class="hero">
+  <div class="hero-badge">XHS Insight Report · Confidential</div>
+  <h1>Carlsberg × <span>小红书</span><br>Thailand Beer Insight</h1>
+  <div class="hero-sub">Consumer landscape, search behavior & audience strategy on China's leading lifestyle platform</div>
+  <div class="hero-meta">
+    <div class="hero-meta-item">📅 2025 Jan – 2026 Apr</div>
+    <div class="hero-meta-item">📱 XHS Platform Data</div>
+    <div class="hero-meta-item">🔒 For Client Use Only</div>
+  </div>
+</div>
+
+<!-- ===================== NAV ===================== -->
+<div class="nav-sticky">
+  <div class="nav-inner">
+    <a class="nav-btn" href="#s1">📊 Search Trend</a>
+    <a class="nav-btn" href="#s2">👤 Consumer Portrait</a>
+    <a class="nav-btn" href="#s3">🌿 Lifestyle Tags</a>
+    <a class="nav-btn" href="#s4">📣 SOV</a>
+    <a class="nav-btn" href="#s5">🎯 Audience Segments</a>
+    <a class="nav-btn" href="#s6">💡 Key Insights</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===================== S1: SEARCH TREND ===================== -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div>
+      <div class="section-title">Search Volume Trend</div>
+      <div class="section-sub">泰国啤酒赛道 · 月度搜索热度趋势 · Jan 2025 – Apr 2026</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Monthly Search Index — Relative Trend (Desensitized)</div>
+    <div style="position:relative;">
+      <div class="trend-bars" id="trendBars">
+        <!-- Bars injected by JS -->
+      </div>
+    </div>
+
+    <div class="callout-row">
+      <div class="callout-pill">
+        <div class="cp-label">2025 Pattern</div>
+        <div class="cp-val">Q3–Q4 Peak</div>
+        <div class="cp-desc">Summer–autumn consistently highest within-year period</div>
+      </div>
+      <div class="callout-pill gold">
+        <div class="cp-label">2026 Surge</div>
+        <div class="cp-val gold">All-time High</div>
+        <div class="cp-desc">Mar 2026 reached the highest point across the entire 16-month window</div>
+      </div>
+      <div class="callout-pill blue">
+        <div class="cp-label">Direction</div>
+        <div class="cp-val blue">↑ Structural</div>
+        <div class="cp-desc">Category moving from niche interest to mainstream lifestyle content</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Seasonal Pattern Insight</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="font-size:20px; flex-shrink:0;">☀️</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px;">Summer & Q4 are natural high seasons</div>
+          <div style="font-size:12px; color:var(--text-mid); line-height:1.6;">Outbound travel peaks in Jul–Oct drive Thailand-related content surges, with beer as a natural travel companion keyword.</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="font-size:20px; flex-shrink:0;">🚀</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px;">2026 marks category breakout</div>
+          <div style="font-size:12px; color:var(--text-mid); line-height:1.6;">The early 2026 search spike suggests Thai beer has crossed from travel-niche into everyday lifestyle discovery — content creation is growing faster than paid ad presence can capture.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S2: CONSUMER PORTRAIT ===================== -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-icon">👤</div>
+    <div>
+      <div class="section-title">Consumer Portrait</div>
+      <div class="section-sub">目标受众画像 · 5个灵犀人群包综合分析</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Core Demographics at a Glance</div>
+    <div class="portrait-grid">
+      <div class="kpi-tile">
+        <div class="kt-icon">♀️</div>
+        <div class="kt-val">Female-led</div>
+        <div class="kt-label">Gender Skew</div>
+        <div class="kt-sub">2× platform avg</div>
+      </div>
+      <div class="kpi-tile gold">
+        <div class="kt-icon">🎯</div>
+        <div class="kt-val gold">26–35</div>
+        <div class="kt-label">Core Age Band</div>
+        <div class="kt-sub">Majority of audience</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kt-icon">💍</div>
+        <div class="kt-val">Unmarried</div>
+        <div class="kt-label">Dominant Status</div>
+        <div class="kt-sub">High disposable income</div>
+      </div>
+      <div class="kpi-tile blue">
+        <div class="kt-icon">🏙️</div>
+        <div class="kt-val blue">T1 Cities</div>
+        <div class="kt-label">City Concentration</div>
+        <div class="kt-sub">Top 2 tiers = near half</div>
+      </div>
+      <div class="kpi-tile gold">
+        <div class="kt-icon">📱</div>
+        <div class="kt-val gold">iPhone</div>
+        <div class="kt-label">Dominant Device</div>
+        <div class="kt-sub">High-income proxy signal</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kt-icon">💳</div>
+        <div class="kt-val">Mid–High</div>
+        <div class="kt-label">Spend Level</div>
+        <div class="kt-sub">Low-spend segment minimal</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="portrait-two">
+    <div class="card">
+      <div class="card-label">Age Distribution</div>
+      <div class="bar-list">
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-muted);">18–22</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:65%; background:linear-gradient(90deg,#4ade80,#006B3E);">
+              <span class="bl-fill-label">Moderate</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-muted);">23–25</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:65%; background:linear-gradient(90deg,#4ade80,#006B3E);">
+              <span class="bl-fill-label">Moderate</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; font-weight:800; color:var(--gold);">26–30 ⭐</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:95%; background:linear-gradient(90deg,#fbbf24,#C9A84C);">
+              <span class="bl-fill-label" style="color:#3d2800;">Highest</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-muted);">31–35</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:58%; background:linear-gradient(90deg,#4ade80,#006B3E);">
+              <span class="bl-fill-label">Significant</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-faint);">36–40</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:28%; background:#86efac;">
+              <span class="bl-fill-label dark">Lower</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-faint);">41+</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:14%; background:#d1fae5;">
+              <span class="bl-fill-label dark">Low</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px; background:var(--green-pale); border-radius:6px; padding:8px 10px; font-size:11px; color:var(--green);">
+        23–35 age band = <b>core majority</b> of audience
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">City Tier Distribution</div>
+      <div class="bar-list">
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; font-weight:800; color:var(--blue);">New Tier 1 ⭐</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:100%; background:linear-gradient(90deg,#3b82f6,#2563eb);">
+              <span class="bl-fill-label">#1 City Tier</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-mid);">Tier 1</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:82%; background:linear-gradient(90deg,#60a5fa,#3b82f6);">
+              <span class="bl-fill-label">Very High</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-muted);">Tier 2</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:76%; background:linear-gradient(90deg,#93c5fd,#60a5fa);">
+              <span class="bl-fill-label">High</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-faint);">Tier 3</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:51%; background:#bfdbfe;">
+              <span class="bl-fill-label dark" style="color:#1d4ed8;">Moderate</span>
+            </div>
+          </div>
+        </div>
+        <div class="bl-row">
+          <div class="bl-label" style="font-size:10.5px; color:var(--text-faint);">Tier 4–5</div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:28%; background:#dbeafe;">
+              <span class="bl-fill-label dark" style="color:#1d4ed8;">Low</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px; background:var(--blue-pale); border-radius:6px; padding:8px 10px; font-size:11px; color:var(--blue);">
+        Tier 1 + New Tier 1 = <b>largest combined city group</b> — China's premium consumer belt
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Brand Affinity Signals (TGI — Indexed vs. Platform Average)</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:10px;">
+      <div style="background:var(--bg); border-radius:8px; padding:12px;">
+        <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">✈️ Travel & Lifestyle</div>
+        <div class="bar-list">
+          <div class="bl-row"><div class="bl-label">Michelin</div><div class="bl-track"><div class="bl-fill" style="width:100%; background:var(--green);"><span class="bl-fill-label">Extremely High</span></div></div></div>
+          <div class="bl-row"><div class="bl-label">Miu Miu</div><div class="bl-track"><div class="bl-fill" style="width:96%; background:var(--green);"><span class="bl-fill-label">Extremely High</span></div></div></div>
+          <div class="bl-row"><div class="bl-label">lululemon</div><div class="bl-track"><div class="bl-fill" style="width:78%; background:var(--green-mid);"><span class="bl-fill-label">Very High</span></div></div></div>
+          <div class="bl-row"><div class="bl-label">Ctrip</div><div class="bl-track"><div class="bl-fill" style="width:87%; background:var(--green);"><span class="bl-fill-label">Very High</span></div></div></div>
+        </div>
+      </div>
+      <div style="background:var(--bg); border-radius:8px; padding:12px;">
+        <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">🛒 Premium Retail</div>
+        <div class="bar-list">
+          <div class="bl-row"><div class="bl-label">Sam's Club</div><div class="bl-track"><div class="bl-fill" style="width:62%; background:var(--gold-light);"><span class="bl-fill-label" style="color:#3d2800;">High</span></div></div></div>
+          <div class="bl-row"><div class="bl-label">Hema</div><div class="bl-track"><div class="bl-fill" style="width:64%; background:var(--gold-light);"><span class="bl-fill-label" style="color:#3d2800;">High</span></div></div></div>
+          <div class="bl-row"><div class="bl-label">MUJI</div><div class="bl-track"><div class="bl-fill" style="width:81%; background:var(--gold);"><span class="bl-fill-label" style="color:#3d2800;">Very High</span></div></div></div>
+          <div class="bl-row"><div class="bl-label">Hermès</div><div class="bl-track"><div class="bl-fill" style="width:52%; background:#fbbf24;"><span class="bl-fill-label" style="color:#3d2800;">High</span></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px; font-size:11.5px; color:var(--text-mid); background:var(--bg); border-radius:8px; padding:10px 14px; line-height:1.65;">
+      These brand affinities reveal a consumer who <b>pays for quality and experience</b>, not promotions. Carlsberg's positioning as a <b>premium-but-accessible lifestyle brand</b> is highly aligned.
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S3: LIFESTYLE TAGS ===================== -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-icon">🌿</div>
+    <div>
+      <div class="section-title">Lifestyle Tags</div>
+      <div class="section-sub">生活方式标签 · 字体越大/颜色越深 = 群体共鸣越强</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Lifestyle Identity Cloud — Strength by Tag Size & Shade</div>
+    <div class="cloud-area">
+      <span class="cloud-tag ct-g5">短逃离自愈派<span class="sub">Short-escape Self-healer · Extreme</span></span>
+      <span class="cloud-tag ct-s4">野趣探索家<span class="sub">Wild Explorer · Very Strong</span></span>
+      <span class="cloud-tag ct-g4">心灵远行客<span class="sub">Soul Traveler · Very Strong</span></span>
+      <span class="cloud-tag ct-g4">心灵奇旅<span class="sub">Mind Journey · Very Strong</span></span>
+      <span class="cloud-tag ct-s3">气场精英<span class="sub">Elite Presence · Strong</span></span>
+      <span class="cloud-tag ct-g3">松弛爸妈<span class="sub">Relaxed Parent · Strong</span></span>
+      <span class="cloud-tag ct-s3">优奢享法<span class="sub">Luxury Lifestyle · Strong</span></span>
+      <span class="cloud-tag ct-g3">好孕预备役<span class="sub">Pre-pregnancy Prep · Strong</span></span>
+      <span class="cloud-tag ct-s3">自在户外<span class="sub">Outdoor Freedom · Strong</span></span>
+      <span class="cloud-tag ct-g3">家有萌宠<span class="sub">Pet Parent · Medium</span></span>
+      <span class="cloud-tag ct-s2">运动焕活<span class="sub">Active Wellness · Broad reach</span></span>
+      <span class="cloud-tag ct-g2">文艺沉浸<span class="sub">Arts & Culture · Present</span></span>
+      <span class="cloud-tag ct-s1">舌尖盛宴<span class="sub">Foodie Feast · Highest penetration</span></span>
+      <span class="cloud-tag ct-s1">发现附近<span class="sub">Discover Nearby · Very broad</span></span>
+      <span class="cloud-tag ct-s1">时尚态度<span class="sub">Fashion Forward · Broad</span></span>
+      <span class="cloud-tag ct-s1">娱乐放松<span class="sub">Entertainment · Broad</span></span>
+    </div>
+    <div class="cloud-legend">
+      <div class="cl-item"><div class="cl-swatch" style="background:#7a4f00;"></div>Extreme strength</div>
+      <div class="cl-item"><div class="cl-swatch" style="background:#006B3E;"></div>Very strong</div>
+      <div class="cl-item"><div class="cl-swatch" style="background:#C9A84C;"></div>Strong (gold)</div>
+      <div class="cl-item"><div class="cl-swatch" style="background:#16a34a;"></div>Strong (green)</div>
+      <div class="cl-item"><div class="cl-swatch" style="background:#bbf7d0; border:1px solid #c6f0dc;"></div>Broad penetration</div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="ib-label">🔥 Core Creative Insight</div>
+    <div class="ib-text">
+      The strongest shared signal across all five audience segments is <b>「短逃离自愈派」— the Short-escape Self-healer</b>.<br><br>
+      These are urban professionals who use brief escapes to decompress from high-pressure daily life. Thailand isn't a vacation destination for them — it's a <b>form of therapy</b>.<br><br>
+      Carlsberg content shouldn't lead with product features. It should lead with <b>the feeling of arrival</b>: stepping off the plane, the heat, the first cold one cracked open at a 7-Eleven. <i>That moment is the brand.</i>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S4: SOV ===================== -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-icon">📣</div>
+    <div>
+      <div class="section-title">Competitive Share of Voice</div>
+      <div class="section-sub">品牌付费声量 · XHS 泰国啤酒赛道 · 近6个月</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Paid SOV — Brand Comparison</div>
+    <div class="sov-wrap">
+      <div class="sov-bars">
+        <div class="sov-row">
+          <div class="sov-brand" style="font-weight:800; color:var(--green);">🍺 Carlsberg</div>
+          <div class="sov-track">
+            <div class="sov-fill" style="width:100%; background:linear-gradient(90deg,var(--green-dark),var(--green-mid));">
+              <span class="sov-fill-lbl">Dominant — #1</span>
+            </div>
+          </div>
+        </div>
+        <div class="sov-row">
+          <div class="sov-brand" style="color:var(--text-faint);">Chang</div>
+          <div class="sov-track">
+            <div class="sov-fill" style="width:3%; background:#e0e0e0;"></div>
+          </div>
+        </div>
+        <div class="sov-row">
+          <div class="sov-brand" style="color:var(--text-faint);">Singha</div>
+          <div class="sov-track">
+            <div class="sov-fill" style="width:2%; background:#e0e0e0;"></div>
+          </div>
+        </div>
+        <div class="sov-row">
+          <div class="sov-brand" style="color:var(--text-faint);">Leo</div>
+          <div class="sov-track">
+            <div class="sov-fill" style="width:2%; background:#e0e0e0;"></div>
+          </div>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-muted); line-height:1.6;">
+          Carlsberg SG holds <b>dominant paid SOV</b> in the Thailand beer category on XHS. Chang, Singha, and Leo have <b>zero paid investment</b> — they rely entirely on organic user content.
+        </div>
+      </div>
+
+      <div class="sov-donut-area">
+        <div class="sov-donut-label">SOV Share</div>
+        <svg width="160" height="160" viewBox="0 0 42 42">
+          <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f0f2f5" stroke-width="10"/>
+          <circle cx="21" cy="21" r="15.9" fill="none" stroke="#006B3E" stroke-width="10"
+            stroke-dasharray="97 3" stroke-dashoffset="25"/>
+          <circle cx="21" cy="21" r="15.9" fill="none" stroke="#fde68a" stroke-width="10"
+            stroke-dasharray="3 97" stroke-dashoffset="-72"/>
+          <circle cx="21" cy="21" r="9" fill="#fff"/>
+          <text x="21" y="19" text-anchor="middle" font-size="5" font-weight="900" fill="#006B3E">Near</text>
+          <text x="21" y="23.5" text-anchor="middle" font-size="5" font-weight="900" fill="#006B3E">100%</text>
+        </svg>
+        <div style="margin-top:10px; text-align:center;">
+          <div style="display:flex; align-items:center; gap:6px; justify-content:center; margin-bottom:5px;">
+            <div style="width:12px;height:12px;background:var(--green);border-radius:3px;"></div>
+            <span style="font-size:11px; color:var(--text-mid);">Carlsberg — Dominant</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; justify-content:center;">
+            <div style="width:12px;height:12px;background:#fde68a;border:1px solid var(--gold);border-radius:3px;"></div>
+            <span style="font-size:11px; color:var(--text-faint);">All others — Negligible</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sov-alert">
+      <div class="sa-label">⚠️ Critical Gap: Organic Content Nearly Absent</div>
+      <div class="sa-text">
+        Despite dominating paid SOV, <b>organic content credibility is near zero</b>. Users searching "which Thai beer tastes best" find ads — but almost no real user reviews or KOL posts for Carlsberg.<br><br>
+        Chang and Singha, with zero paid spend, still surface in organic results because <b>real travelers mention them naturally</b>. This creates a trust imbalance: Carlsberg is findable, but not perceived as authentic.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S5: SEGMENTS ===================== -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <div>
+      <div class="section-title">Five Audience Segments</div>
+      <div class="section-sub">分层投放策略 · 优先级从上到下 · Source: Linxi Crowd Market</div>
+    </div>
+  </div>
+
+  <div class="seg-list">
+
+    <!-- P1 -->
+    <div class="seg-card sc-p1">
+      <div class="seg-badge">
+        <div class="sb-icon">✈️</div>
+        <div class="sb-p p1">P1 · Core</div>
+      </div>
+      <div class="seg-body">
+        <div class="sb-name">Thailand Travel Interest</div>
+        <div class="sb-tags">
+          <span class="stag stag-g">Female-led</span>
+          <span class="stag stag-g">26–30 peak</span>
+          <span class="stag stag-g">Unmarried majority</span>
+          <span class="stag stag-g">New Tier 1 cities</span>
+          <span class="stag stag-g">iPhone heavy</span>
+          <span class="stag stag-g">Outbound travel intent</span>
+        </div>
+        <div class="sb-desc">Active Thailand search behavior in the past 30 days. <b>Closest audience to purchase intent.</b> Detailed travel planners with strong travel budgets. Use travel content platforms intensively.</div>
+        <div class="sb-strategy"><b>Content:</b> "Bangkok survival guide" / "First stop off the plane: 7-Eleven + Carlsberg" — embed brand into travel planning content<br><b>Media:</b> Search keyword interception (P1 terms) + crowd pack dual-track</div>
+      </div>
+      <div class="seg-meter">
+        <div class="sm-label">Priority</div>
+        <div class="sm-bar-wrap"><div class="sm-bar" style="height:100%; background:var(--green);"></div></div>
+        <div style="font-size:10px; font-weight:800; color:var(--green);">MAX</div>
+      </div>
+    </div>
+
+    <!-- P2a -->
+    <div class="seg-card sc-p2">
+      <div class="seg-badge">
+        <div class="sb-icon">🎉</div>
+        <div class="sb-p p2">P2 · High</div>
+      </div>
+      <div class="seg-body">
+        <div class="sb-name">Group Outings & Social Travel</div>
+        <div class="sb-tags">
+          <span class="stag stag-gold">Female majority</span>
+          <span class="stag stag-gold">Travel = #1 interest</span>
+          <span class="stag stag-gold">Strong group influence</span>
+          <span class="stag stag-gold">Ctrip users</span>
+        </div>
+        <div class="sb-desc"><b>One person influences a group's purchase decisions.</b> Girls' trips, friend-group holidays are core scenarios. High travel spend, socially connected.</div>
+        <div class="sb-strategy gold"><b>Content:</b> "Girls' Thailand trip must-haves" / "What to drink on Bangkok nights" — social sharing hooks<br><b>Media:</b> In-feed video, social outing scenarios, group-influencer dynamics</div>
+      </div>
+      <div class="seg-meter">
+        <div class="sm-label">Priority</div>
+        <div class="sm-bar-wrap"><div class="sm-bar" style="height:85%; background:var(--gold);"></div></div>
+        <div style="font-size:10px; font-weight:800; color:var(--gold);">HIGH</div>
+      </div>
+    </div>
+
+    <!-- P2b -->
+    <div class="seg-card sc-p2">
+      <div class="seg-badge">
+        <div class="sb-icon">🍺</div>
+        <div class="sb-p p2">P2 · High</div>
+      </div>
+      <div class="seg-body">
+        <div class="sb-name">Heavy Alcohol Consumers</div>
+        <div class="sb-tags">
+          <span class="stag stag-gold">Female-heavy</span>
+          <span class="stag stag-gold">Alcohol TGI very high</span>
+          <span class="stag stag-gold">Self-healer tag</span>
+          <span class="stag stag-gold">Activated drinkers</span>
+        </div>
+        <div class="sb-desc">Alcohol purchase behavior already activated — <b>only brand switching needed, no habit formation required.</b> "Smooth & sessionable" and "honest beer tier list" messaging converts well.</div>
+        <div class="sb-strategy gold"><b>Content:</b> Honest Thai beer comparison / "goes down smooth" micro-video<br><b>Media:</b> Alcohol interest targeting + competitor keyword interception (Chang, Singha)</div>
+      </div>
+      <div class="seg-meter">
+        <div class="sm-label">Priority</div>
+        <div class="sm-bar-wrap"><div class="sm-bar" style="height:80%; background:var(--gold);"></div></div>
+        <div style="font-size:10px; font-weight:800; color:var(--gold);">HIGH</div>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="seg-card sc-p2">
+      <div class="seg-badge">
+        <div class="sb-icon">🏠</div>
+        <div class="sb-p p2">P3 · Mid</div>
+      </div>
+      <div class="seg-body">
+        <div class="sb-name">Home Gathering & Family Hosting</div>
+        <div class="sb-tags">
+          <span class="stag stag-gold">Premium household</span>
+          <span class="stag stag-gold">Sam's Club & Hema users</span>
+          <span class="stag stag-gold">More married</span>
+          <span class="stag stag-gold">Luxury brand affinity</span>
+        </div>
+        <div class="sb-desc"><b>Quality-first household spending decision makers.</b> Hermès, Sam's Club, Hema brand affinities signal strong premium retail preference. "Thailand souvenir" and dinner hosting angles work well.</div>
+        <div class="sb-strategy gold"><b>Content:</b> "Best souvenir to bring back from Thailand" / "Upgrade your dinner table" premium positioning<br><b>Media:</b> Overlap targeting with premium grocery / retail user segments</div>
+      </div>
+      <div class="seg-meter">
+        <div class="sm-label">Priority</div>
+        <div class="sm-bar-wrap"><div class="sm-bar" style="height:60%; background:var(--gold-light);"></div></div>
+        <div style="font-size:10px; font-weight:800; color:var(--gold);">MID</div>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="seg-card sc-p4">
+      <div class="seg-badge">
+        <div class="sb-icon">🌍</div>
+        <div class="sb-p p4">P4 · Expand</div>
+      </div>
+      <div class="seg-body">
+        <div class="sb-name">General Travel Enthusiasts</div>
+        <div class="sb-tags">
+          <span class="stag stag-b">Female majority</span>
+          <span class="stag stag-b">Strong travel affinity</span>
+          <span class="stag stag-b">Largest volume</span>
+          <span class="stag stag-b">"See the world" mindset</span>
+        </div>
+        <div class="sb-desc">Largest crowd volume. Broad travel interest, outbound-leaning. <b>Best for brand awareness, not direct conversion.</b> lululemon, MUJI brand affinities confirm quality lifestyle orientation.</div>
+        <div class="sb-strategy blue"><b>Content:</b> Southeast Asia travel series, Carlsberg as a symbol of the Thailand experience — brand impressions<br><b>Media:</b> Awareness-first; optimize for reach, not ROAS</div>
+      </div>
+      <div class="seg-meter">
+        <div class="sm-label">Priority</div>
+        <div class="sm-bar-wrap"><div class="sm-bar" style="height:45%; background:var(--blue);"></div></div>
+        <div style="font-size:10px; font-weight:800; color:var(--blue);">EXP</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== S6: KEY INSIGHTS ===================== -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-icon">💡</div>
+    <div>
+      <div class="section-title">Key Insights & Recommendations</div>
+      <div class="section-sub">核心结论与策略建议</div>
+    </div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="ig-card">
+      <div class="ig-icon">👩</div>
+      <div class="ig-title">This Is a Women's Category</div>
+      <div class="ig-text">The Thailand beer audience on XHS is overwhelmingly female — <b>double the platform average</b>. Traditional male-skewed beer marketing will underperform here. Reframe positioning around lifestyle, self-reward, and travel identity.</div>
+    </div>
+    <div class="ig-card">
+      <div class="ig-icon">🛫</div>
+      <div class="ig-title">Beer = Travel Symbol, Not Just Drink</div>
+      <div class="ig-text">Users don't search for Carlsberg — they search for Thailand experiences. <b>Embed Carlsberg into the travel narrative</b>: the 7-Eleven stop, the first night in Bangkok, the beach sunset. The product follows the moment.</div>
+    </div>
+    <div class="ig-card">
+      <div class="ig-icon">🔒</div>
+      <div class="ig-title">Paid SOV Is Owned — But Organic Is Empty</div>
+      <div class="ig-text">Dominant paid presence creates reach — but <b>zero authentic reviews creates a trust gap</b>. Users can find Carlsberg ads, but can't find genuine recommendations. KOL seeding is the most urgent gap to fill.</div>
+    </div>
+    <div class="ig-card">
+      <div class="ig-icon">📈</div>
+      <div class="ig-title">Category Is in Breakout Phase</div>
+      <div class="ig-text">The all-time search peak in early 2026 signals that Thai beer has <b>crossed from travel-niche to lifestyle mainstream</b> on XHS. This is the highest-leverage window: act while organic content competition is still low.</div>
+    </div>
+    <div class="ig-card">
+      <div class="ig-icon">🎯</div>
+      <div class="ig-title">Start with P1, Expand Outward</div>
+      <div class="ig-text">Launch with the <b>Thailand Travel Interest crowd</b> (highest intent), layer in the two P2 segments for scale, and use the general travel crowd for brand awareness. Don't scatter budget across all five simultaneously.</div>
+    </div>
+    <div class="ig-card">
+      <div class="ig-icon">✍️</div>
+      <div class="ig-title">The Winning Creative Hook</div>
+      <div class="ig-text">The self-healer travel identity is the <b>strongest emotional thread</b> across all audiences. Best-performing content will feel like a personal diary entry from someone who finally exhaled — not a product pitch.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px; background:linear-gradient(135deg, var(--green-dark), #0a5e38); border-radius:var(--radius); padding:24px 28px; color:#fff;">
+    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.5); margin-bottom:10px;">One-Line Strategy</div>
+    <div style="font-size:clamp(15px,2.5vw,18px); font-weight:700; line-height:1.55; color:#fff;">
+      Carlsberg owns the paid voice — now it needs the <span style="color:var(--gold-light);">authentic voice</span>. Invest in KOL seeding that feels like a friend's recommendation, not a brand memo. That's the gap between <span style="color:var(--gold-light);">findable</span> and <span style="color:var(--gold-light);">trustworthy</span>.
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+  <b>Carlsberg × XHS Thailand Beer Insight Report</b><br>
+  Data source: XHS Insight Platform · Linxi Audience Intelligence · RedBI<br>
+  All search index data is desensitized and represents relative trends only · Not for redistribution<br>
+  © 2026 · For client internal use only
+</div>
+
+<!-- ===================== JS: TREND BARS ===================== -->
+<script>
+// Trend data — normalized to max=100 (no absolute numbers shown)
+const months = [
+  { label:'Jan\n2025', v:34, yr:'2025' },
+  { label:'Feb', v:39, yr:'2025' },
+  { label:'Mar', v:53, yr:'2025' },
+  { label:'Apr', v:45, yr:'2025' },
+  { label:'May', v:42, yr:'2025' },
+  { label:'Jun', v:39, yr:'2025' },
+  { label:'Jul', v:48, yr:'2025' },
+  { label:'Aug', v:61, yr:'2025' },
+  { label:'Sep', v:64, yr:'2025' },
+  { label:'Oct', v:66, yr:'2025' },
+  { label:'Nov', v:62, yr:'2025' },
+  { label:'Dec', v:52, yr:'2025' },
+  { label:'Jan\n2026', v:82, yr:'2026' },
+  { label:'Feb', v:55, yr:'2026' },
+  { label:'Mar', v:100, yr:'2026', peak:true },
+  { label:'Apr', v:82, yr:'2026' },
+];
+
+const maxH = 112; // px
+const container = document.getElementById('trendBars');
+
+months.forEach((m, i) => {
+  const h = Math.max(4, (m.v / 100) * maxH);
+  const is26 = m.yr === '2026';
+  const isPeak = m.peak;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'trend-bar-wrap';
+
+  const bar = document.createElement('div');
+  bar.className = 'trend-bar';
+  bar.style.height = h + 'px';
+
+  if (isPeak) {
+    bar.style.background = 'linear-gradient(180deg,#f59e0b,#7a4f00)';
+    bar.style.boxShadow = '0 0 10px rgba(201,168,76,0.45)';
+  } else if (is26) {
+    bar.style.background = 'linear-gradient(180deg,#fbbf24,#C9A84C)';
+  } else {
+    bar.style.background = 'linear-gradient(180deg,#4ade80,#006B3E)';
+  }
+
+  const lbl = document.createElement('div');
+  lbl.className = 'trend-bar-lbl' + (isPeak ? ' emph' : '');
+  const lines = m.label.split('\n');
+  lbl.innerHTML = lines.join('<br>') + (isPeak ? '<br>🔥PEAK' : '');
+
+  wrap.appendChild(bar);
+  wrap.appendChild(lbl);
+  container.appendChild(wrap);
+});
+
+// Divider
+const divider = document.createElement('div');
+divider.className = 'trend-divider';
+container.appendChild(divider);
+
+// Year labels
+const y25 = document.createElement('div');
+y25.className = 'trend-year-label y25';
+y25.textContent = '← 2025';
+container.appendChild(y25);
+
+const y26 = document.createElement('div');
+y26.className = 'trend-year-label y26';
+y26.textContent = '2026 →';
+container.appendChild(y26);
+
+// Nav active state
+const sections = document.querySelectorAll('.section');
+const navBtns = document.querySelectorAll('.nav-btn');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) cur = s.id;
+  });
+  navBtns.forEach(b => {
+    b.classList.toggle('active', b.getAttribute('href') === '#' + cur);
+  });
+});
+</script>
+</body>
+</html>
