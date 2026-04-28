@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>跨境加速器赛道 · 流量洞察看板</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0d1117; color: #e6edf3; font-family: -apple-system, 'PingFang SC', sans-serif; min-height: 100vh; }
+
+.header { padding: 20px 16px 12px; border-bottom: 1px solid #21262d; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.header h1 { font-size: 18px; font-weight: 700; color: #58a6ff; letter-spacing: 0.5px; }
+.header-meta { font-size: 11px; color: #8b949e; }
+.download-btn { background: #21262d; border: 1px solid #30363d; color: #8b949e; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.download-btn:hover { color: #e6edf3; border-color: #58a6ff; }
+
+.section { padding: 20px 16px; border-bottom: 1px solid #21262d; }
+.section-title { font-size: 13px; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+
+/* Part 0 */
+.signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.signal-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 14px 12px; }
+.signal-label { font-size: 12px; color: #8b949e; margin-bottom: 6px; }
+.signal-status { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.signal-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: #3fb950; box-shadow: 0 0 8px #3fb95066; }
+.dot-yellow { background: #d29922; box-shadow: 0 0 8px #d2992266; }
+.dot-red { background: #f85149; box-shadow: 0 0 8px #f8514966; }
+.signal-desc { font-size: 11px; color: #8b949e; margin-top: 4px; }
+
+.action-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
+.action-scroll::-webkit-scrollbar { height: 3px; }
+.action-scroll::-webkit-scrollbar-track { background: #161b22; }
+.action-scroll::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+.action-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 14px; min-width: 200px; flex-shrink: 0; }
+.action-brand { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.action-text { font-size: 11px; color: #8b949e; line-height: 1.5; }
+.brand-shuttle { color: #58a6ff; }
+.brand-sixfast { color: #f0883e; }
+.brand-speedx { color: #bc8cff; }
+
+/* Tabs */
+.tab-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid #30363d; color: #8b949e; background: transparent; transition: all 0.2s; white-space: nowrap; }
+.tab.active { background: #1f6feb; border-color: #1f6feb; color: #fff; font-weight: 600; }
+
+/* Charts */
+.chart-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.chart { height: 260px; min-width: 300px; }
+.heatmap-chart { height: 220px; min-width: 480px; }
+
+/* Part 3 */
+.keyword-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media(min-width:480px) { .keyword-grid { grid-template-columns: 1fr 1fr; } }
+.kw-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 12px; }
+.kw-name { font-size: 12px; font-weight: 600; margin-bottom: 10px; color: #e6edf3; }
+.kw-bar-row { margin-bottom: 6px; }
+.kw-brand { font-size: 11px; color: #8b949e; margin-bottom: 3px; display: flex; justify-content: space-between; }
+.kw-bar-bg { background: #21262d; border-radius: 3px; height: 6px; }
+.kw-bar-fill { height: 6px; border-radius: 3px; }
+
+/* Part 4 */
+.insight-text { font-size: 13px; line-height: 1.8; color: #8b949e; margin-bottom: 16px; padding: 14px; background: #161b22; border-radius: 10px; border-left: 3px solid #1f6feb; }
+.action-list { display: flex; flex-direction: column; gap: 8px; }
+.action-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px; background: #161b22; border: 1px solid #21262d; border-radius: 10px; }
+.priority-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+.p0 { background: #3d1f1f; color: #f85149; border: 1px solid #f8514933; }
+.p1 { background: #3d2f1a; color: #d29922; border: 1px solid #d2992233; }
+.p2 { background: #1a3d1f; color: #3fb950; border: 1px solid #3fb95033; }
+.action-content { font-size: 12px; color: #8b949e; line-height: 1.5; }
+.action-content strong { color: #e6edf3; }
+
+@media print {
+  body { background: #fff; color: #000; }
+  .download-btn { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>跨境加速器赛道 · 流量洞察看板</h1>
+    <div class="header-meta">数据更新：2026-04-29 · 来源：小红书内部 SOV 数据</div>
+  </div>
+  <button class="download-btn" onclick="window.print()">📥 下载</button>
+</div>
+
+<!-- Part 0: 核心结论 -->
+<div class="section">
+  <div class="section-title">Part 0 · 核心结论</div>
+  <div class="signal-grid">
+    <div class="signal-card">
+      <div class="signal-label">东南亚词</div>
+      <div class="signal-status"><span class="signal-dot dot-green"></span>蓝海机会</div>
+      <div class="signal-desc">无品牌竞价覆盖，立即可入场</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-label">回国加速词</div>
+      <div class="signal-status"><span class="signal-dot dot-yellow"></span>可切入</div>
+      <div class="signal-desc">UU 独占 96%，仍有截流空间</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-label">游戏加速词</div>
+      <div class="signal-status"><span class="signal-dot dot-red"></span>竞争激烈</div>
+      <div class="signal-desc">雷神系 50%+，进入成本高</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-label">品牌词</div>
+      <div class="signal-status"><span class="signal-dot dot-yellow"></span>截流机会</div>
+      <div class="signal-desc">各品牌守词，竞品词可低价抢</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:4px">近期竞品动态</div>
+  <div class="action-scroll">
+    <div class="action-card">
+      <div class="action-brand brand-shuttle">🚀 穿梭 · 停投警示</div>
+      <div class="action-text">2025年11-12月大规模投放后，2026年初几乎清零。疑似预算耗尽或策略转向，品牌词防守真空。</div>
+    </div>
+    <div class="action-card">
+      <div class="action-brand brand-sixfast">⚡ SIXFAST · 4月爆发</div>
+      <div class="action-text">2026-04 SOV 骤升至 92.9%，新一轮冲量明显，重点抢占「海外回国加速器」词位，需密切跟踪。</div>
+    </div>
+    <div class="action-card">
+      <div class="action-brand brand-speedx">🔬 SpeedX · 试水退出</div>
+      <div class="action-text">2026-02 单月 SOV 32.5%，随后迅速撤退至 0.2%。测试期结束，或将二次发力，注意观察。</div>
+    </div>
+    <div class="action-card">
+      <div class="action-brand" style="color:#3fb950">🎮 雷神系 · 持续增强</div>
+      <div class="action-text">2026年 Q1 游戏加速词逐月增强，3月 SOV 17.1%，游戏场景布防完整，短期难以撼动。</div>
+    </div>
+  </div>
+</div>
+
+<!-- Part 1: 流量趋势 -->
+<div class="section">
+  <div class="section-title">Part 1 · 流量趋势预测</div>
+  <div class="tab-bar" id="tab-bar-1">
+    <button class="tab active" onclick="switchTab(0)">东南亚</button>
+    <button class="tab" onclick="switchTab(1)">回国加速</button>
+    <button class="tab" onclick="switchTab(2)">游戏加速</button>
+  </div>
+  <div class="chart-wrap">
+    <div id="chart-trend" class="chart"></div>
+  </div>
+</div>
+
+<!-- Part 2: 竞品热力图 -->
+<div class="section">
+  <div class="section-title">Part 2 · 竞品投放强度</div>
+  <div class="tab-bar" id="tab-bar-2">
+    <button class="tab active" onclick="switchTab(0)">东南亚</button>
+    <button class="tab" onclick="switchTab(1)">回国加速</button>
+    <button class="tab" onclick="switchTab(2)">游戏加速</button>
+  </div>
+  <div class="chart-wrap">
+    <div id="chart-heatmap" class="heatmap-chart"></div>
+  </div>
+</div>
+
+<!-- Part 3: 搜索词竞争 -->
+<div class="section">
+  <div class="section-title">Part 3 · 搜索词竞争格局</div>
+  <div class="keyword-grid" id="kw-grid"></div>
+</div>
+
+<!-- Part 4: 投放建议 -->
+<div class="section">
+  <div class="section-title">Part 4 · 投放时机建议</div>
+  <div class="insight-text">
+    预计 2026 年 5–6 月，东南亚词流量持续上升（五一出行季带动），是抢先入场的最佳窗口，建议<strong>提前 2–3 周</strong>备好创意素材开始测投。回国加速词将在暑假（7月）迎来全年峰值，建议 6 月底前完成预算充值和创意储备。游戏加速词受寒暑假影响，7–8 月进入高峰，但雷神系壁垒稳固，短期竞争性价比低。
+  </div>
+  <div class="action-list">
+    <div class="action-item">
+      <span class="priority-badge p0">P0</span>
+      <div class="action-content"><strong>东南亚词布局（立即）</strong><br>马来西亚/泰国/新加坡/印尼 VPN 词均无竞品覆盖，CPC 极低，建议本周内开始测投，快速抢占低价词位。</div>
+    </div>
+    <div class="action-item">
+      <span class="priority-badge p0">P0</span>
+      <div class="action-content"><strong>品牌词防守（本月内）</strong><br>穿梭已停投，品牌词防守出现真空；SIXFAST 刚爆发，竞品词截流成本尚低。建议对「穿梭加速器」「快帆加速器」词位补充竞价。</div>
+    </div>
+    <div class="action-item">
+      <span class="priority-badge p1">P1</span>
+      <div class="action-content"><strong>回国加速词插旗（五一前）</strong><br>UU 加速器独占「回国加速」词 96%，但「海外回国加速器」词 SIXFAST + QuickFox 竞争分散，可低成本测试进入。</div>
+    </div>
+    <div class="action-item">
+      <span class="priority-badge p2">P2</span>
+      <div class="action-content"><strong>游戏加速词长线布局（Q3）</strong><br>雷神系当前壁垒稳固，建议暑假前完成创意测试，待竞争减弱时择机加码，优先以「游戏加速器」+「UU加速器」词为切入点。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ 数据 ============
+const MONTHS = ['10月', '11月', '12月', '1月', '2月', '3月', '4月', '5月↑', '6月↑'];
+const MONTHS_SHORT = ['Oct25','Nov25','Dec25','Jan26','Feb26','Mar26','Apr26'];
+const BRANDS = ['穿梭', 'QuickFox', 'SIXFAST', 'UU加速器', '雷神系', 'SpeedX'];
+
+// 趋势数据（相对指数，不展示具体数值）
+const TREND_DATA = {
+  0: { // 东南亚
+    last: [38, 42, 35, 30, 48, 44, 52, null, null],
+    actual: [45, 52, 48, 65, 72, 68, 75, null, null],
+    forecast: [null, null, null, null, null, null, 75, 82, 88],
+    label: '东南亚词流量趋势'
+  },
+  1: { // 回国加速
+    last: [55, 62, 58, 72, 52, 60, 65, null, null],
+    actual: [60, 72, 68, 88, 65, 70, 78, null, null],
+    forecast: [null, null, null, null, null, null, 78, 85, 92],
+    label: '回国加速词流量趋势'
+  },
+  2: { // 游戏加速
+    last: [65, 78, 82, 80, 65, 62, 68, null, null],
+    actual: [70, 85, 90, 88, 72, 68, 75, null, null],
+    forecast: [null, null, null, null, null, null, 75, 80, 85],
+    label: '游戏加速词流量趋势'
+  }
+};
+
+// 热力图数据 [品牌idx, 月份idx, SOV值0-100]
+const HEATMAP_DATA = {
+  0: [ // 东南亚（全0，蓝海）
+    ...BRANDS.flatMap((b,bi) => MONTHS_SHORT.map((m,mi) => [bi, mi, 0]))
+  ],
+  1: [ // 回国加速
+    [0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
+    [1,0,35],[1,1,22],[1,2,35],[1,3,45],[1,4,25],[1,5,40],[1,6,4],
+    [2,0,5],[2,1,2],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,43],
+    [3,0,96],[3,1,12],[3,2,90],[3,3,96],[3,4,0],[3,5,0],[3,6,0],
+    [4,0,0],[4,1,0],[4,2,0],[4,3,2],[4,4,5],[4,5,8],[4,6,2],
+    [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,32],[5,5,0],[5,6,0]
+  ],
+  2: [ // 游戏加速
+    [0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],
+    [1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[1,6,0],
+    [2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,0],
+    [3,0,22],[3,1,2],[3,2,22],[3,3,22],[3,4,0],[3,5,0],[3,6,0],
+    [4,0,6],[4,1,5],[4,2,2],[4,3,2],[4,4,12],[4,5,17],[4,6,2],
+    [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,32],[5,5,0],[5,6,0]
+  ]
+};
+
+// 搜索词竞争数据
+const KW_DATA = [
+  { name: '回国加速', bars: [['UU加速器', 96, '#58a6ff'], ['QuickFox', 4, '#f0883e']] },
+  { name: '海外回国加速器', bars: [['SIXFAST', 43, '#f0883e'], ['Sixfast-小助手', 37, '#d29922'], ['QuickFox', 20, '#58a6ff']] },
+  { name: 'uu加速器', bars: [['UU加速器', 28, '#58a6ff'], ['雷神系', 28, '#f85149'], ['雷神加速器', 9, '#bc8cff']] },
+  { name: '游戏加速器', bars: [['雷神系', 34, '#f85149'], ['UU加速器', 26, '#58a6ff'], ['雷神端游', 15, '#bc8cff']] },
+  { name: '快帆加速器', bars: [['QuickFox', 100, '#f0883e']] },
+  { name: 'QuickFox', bars: [['QuickFox', 85, '#f0883e'], ['其他', 15, '#30363d']] },
+  { name: 'sixfast', bars: [['SIXFAST', 99, '#f0883e'], ['其他', 1, '#30363d']] },
+  { name: 'vpn推荐', bars: [['VeryKuai VK', 95, '#3fb950'], ['其他', 5, '#30363d']] }
+];
+
+// ============ 渲染 Part 3 ============
+const grid = document.getElementById('kw-grid');
+KW_DATA.forEach(kw => {
+  const card = document.createElement('div');
+  card.className = 'kw-card';
+  let html = `<div class="kw-name">${kw.name}</div>`;
+  kw.bars.forEach(([brand, pct, color]) => {
+    html += `
+      <div class="kw-bar-row">
+        <div class="kw-brand"><span>${brand}</span><span style="color:${color}">#${kw.bars.indexOf(kw.bars.find(b=>b[0]===brand))+1}</span></div>
+        <div class="kw-bar-bg"><div class="kw-bar-fill" style="width:${pct}%;background:${color};"></div></div>
+      </div>`;
+  });
+  card.innerHTML = html;
+  grid.appendChild(card);
+});
+
+// ============ ECharts ============
+const trendChart = echarts.init(document.getElementById('chart-trend'), null, {renderer:'canvas'});
+const heatChart = echarts.init(document.getElementById('chart-heatmap'), null, {renderer:'canvas'});
+
+function getTrendOption(idx) {
+  const d = TREND_DATA[idx];
+  return {
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', formatter: params => {
+      return params[0].axisValue + '<br>' + params.filter(p=>p.value!=null).map(p=>`${p.seriesName}: 热度指数 ${p.value}`).join('<br>');
+    }},
+    legend: { data:['去年同期','今年实际','预测'], textStyle:{color:'#8b949e'}, bottom:0, itemWidth:20 },
+    grid: { top:20, bottom:48, left:10, right:10, containLabel:true },
+    xAxis: { type:'category', data:MONTHS, axisLabel:{color:'#8b949e',fontSize:11}, axisLine:{lineStyle:{color:'#21262d'}},
+      axisPointer:{ label:{ formatter: p => {
+        const marks = {'1月':'🧧春节','5月↑':'🎪五一','6月↑':'☀️暑假前'};
+        return marks[p.value] || p.value;
+      }}}
+    },
+    yAxis: { type:'value', show:false, min:0, max:100 },
+    series: [
+      { name:'去年同期', type:'line', data:d.last, smooth:true, symbol:'none',
+        lineStyle:{color:'#30363d',width:1.5,type:'dashed'}, itemStyle:{color:'#30363d'} },
+      { name:'今年实际', type:'line', data:d.actual, smooth:true, symbol:'circle', symbolSize:5,
+        lineStyle:{color:'#58a6ff',width:2.5}, itemStyle:{color:'#58a6ff'},
+        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#58a6ff44'},{offset:1,color:'#58a6ff00'}]}} },
+      { name:'预测', type:'line', data:d.forecast, smooth:true, symbol:'circle', symbolSize:5,
+        lineStyle:{color:'#f0883e',width:2,type:'dashed'}, itemStyle:{color:'#f0883e'},
+        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#f0883e33'},{offset:1,color:'#f0883e00'}]}} }
+    ]
+  };
+}
+
+function getHeatOption(idx) {
+  const rawData = HEATMAP_DATA[idx] || HEATMAP_DATA[0];
+  return {
+    backgroundColor: 'transparent',
+    tooltip: { formatter: p => `${BRANDS[p.data[0]]} · ${MONTHS_SHORT[p.data[1]]}<br>投放强度: ${p.data[2] < 5 ? '极低' : p.data[2] < 25 ? '中等' : p.data[2] < 60 ? '较高' : '强'}` },
+    grid: { top:10, bottom:30, left:80, right:20 },
+    xAxis: { type:'category', data:MONTHS_SHORT, axisLabel:{color:'#8b949e',fontSize:10,rotate:30}, axisLine:{lineStyle:{color:'#21262d'}} },
+    yAxis: { type:'category', data:BRANDS, axisLabel:{color:'#8b949e',fontSize:11}, axisLine:{lineStyle:{color:'#21262d'}} },
+    visualMap: { min:0, max:100, show:false, inRange:{color:['#161b22','#0d419d','#1f6feb','#f0883e','#ffa657']} },
+    series: [{ type:'heatmap', data:rawData, emphasis:{itemStyle:{shadowBlur:10,shadowColor:'rgba(0,0,0,0.5)'}}, label:{show:false} }]
+  };
+}
+
+trendChart.setOption(getTrendOption(0));
+heatChart.setOption(getHeatOption(0));
+
+// ============ Tab 切换 ============
+let currentTab = 0;
+function switchTab(idx) {
+  currentTab = idx;
+  ['tab-bar-1','tab-bar-2'].forEach(barId => {
+    const bar = document.getElementById(barId);
+    bar.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  });
+  trendChart.setOption(getTrendOption(idx));
+  heatChart.setOption(getHeatOption(idx));
+}
+
+// ============ 响应式 ============
+window.addEventListener('resize', () => {
+  trendChart.resize();
+  heatChart.resize();
+});
+</script>
+</body>
+</html>
