@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>账户诊断看板 · 4月29日 周三</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:#F4F5F9;color:#101828;min-height:100vh}
+
+/* Header */
+.header{background:linear-gradient(135deg,#3F55E0 0%,#6366F1 100%);color:#fff;padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(63,85,224,.3)}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;max-width:900px;margin:0 auto}
+.header-title{font-size:16px;font-weight:800}
+.header-sub{font-size:11px;opacity:.7;margin-top:2px}
+.header-time{font-size:22px;font-weight:800;text-align:right;line-height:1}
+.header-date{font-size:11px;opacity:.7;text-align:right;margin-top:2px}
+
+/* Summary */
+.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-bottom:1px solid #EAECF0}
+.sb-item{padding:14px 8px;text-align:center;border-right:1px solid #F3F4F6}
+.sb-item:last-child{border-right:none}
+.sb-num{font-size:28px;font-weight:800;line-height:1;margin-bottom:4px}
+.sb-lbl{font-size:10px;color:#98A2B3;font-weight:500}
+
+/* 主布局 */
+.main-wrap{max-width:900px;margin:0 auto;padding:16px}
+.layout{display:flex;gap:16px;align-items:flex-start}
+
+/* 左侧导航 */
+.side-nav{width:120px;flex-shrink:0;position:sticky;top:80px}
+.nav-title{font-size:10px;color:#98A2B3;font-weight:700;padding:0 8px 6px;text-transform:uppercase;letter-spacing:.5px}
+.nav-link{display:block;padding:8px 10px;font-size:12px;font-weight:600;color:#344054;border-radius:8px;text-decoration:none;margin-bottom:4px;background:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:background .15s}
+.nav-link:hover{background:#EEF0FC;color:#3F55E0}
+
+/* 卡片区 */
+.cards-area{flex:1;min-width:0}
+
+/* 诊断卡片 */
+.diag-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 2px 12px rgba(16,24,40,.08)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.card-head-left{flex:1;min-width:0}
+.card-name{font-size:15px;font-weight:800;color:#101828;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-meta{font-size:11px;color:#98A2B3;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.level-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.atag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+
+/* 步骤 Tabs */
+.step-tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.step-tab{flex:none;padding:6px 12px;font-size:12px;font-weight:700;color:#98A2B3;border-radius:20px;cursor:pointer;background:#F4F5F9;transition:.15s;user-select:none;white-space:nowrap}
+.step-tab.active{background:#3F55E0;color:#fff}
+.step-content{display:none}
+.step-content.active{display:block}
+.step-title{font-size:13px;font-weight:800;color:#344054;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #F3F4F6}
+
+/* 望 */
+.wang-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.wm-box{background:#F7F8FC;border-radius:8px;padding:8px;}
+.wm-val{font-size:14px;font-weight:800;color:#101828}
+.wm-lbl{font-size:10px;color:#98A2B3;margin-top:3px}
+.trend-mini{display:flex;flex-direction:column;justify-content:space-between}
+.mbars{display:flex;align-items:flex-end;gap:2px;height:30px}
+.mbar{flex:1;border-radius:2px 2px 0 0;min-width:4px}
+.mbar.today{outline:2px solid #fff}
+.wang-status{font-size:12px;color:#344054;margin-bottom:8px;padding:8px 10px;background:#F7F8FC;border-radius:8px}
+.remark-box{padding:10px;background:#FFFBEB;border-radius:8px;border:1px solid #FDE68A}
+.remark-title{font-size:11px;font-weight:700;color:#92400E;margin-bottom:4px}
+.remark-text{font-size:11px;color:#78350F;line-height:1.6}
+
+/* 闻 */
+.issue-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.issue-item{display:flex;align-items:flex-start;gap:8px;padding:10px;background:#F9FAFB;border-radius:8px}
+.issue-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.issue-text{font-size:12px;font-weight:600;color:#101828;margin-bottom:3px}
+.issue-action{font-size:11px;color:#667085;line-height:1.5}
+.check-title{font-size:11px;font-weight:700;color:#344054;margin-bottom:6px}
+.check-steps{display:flex;flex-direction:column;gap:4px}
+.cs{font-size:11px;color:#667085;padding:4px 8px;background:#F4F5F9;border-radius:6px}
+
+/* 问 */
+.wen2-goal{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.goal-chip{font-size:12px;font-weight:600;padding:4px 12px;background:#EEF0FC;color:#3F55E0;border-radius:20px}
+.tips-title{font-size:11px;font-weight:700;color:#344054;margin-bottom:6px}
+.tips-list{padding-left:16px;display:flex;flex-direction:column;gap:4px}
+.tips-list li{font-size:12px;color:#344054;line-height:1.6}
+.auth-notice{margin-top:10px;padding:10px;background:#F0F4FF;border-radius:8px}
+.auth-title{font-size:11px;font-weight:700;color:#3F55E0;margin-bottom:6px}
+.auth-item{font-size:11px;color:#4B5563;padding:3px 0;line-height:1.6}
+
+/* 切 */
+.metrics-table-wrap{overflow-x:auto;margin-bottom:12px}
+.metrics-table{width:100%;border-collapse:collapse;font-size:12px}
+.metrics-table th{background:#F7F8FC;padding:7px 10px;text-align:left;font-weight:700;color:#344054;border-bottom:2px solid #E5E7EB}
+.metrics-table td{padding:7px 10px;border-bottom:1px solid #F3F4F6;vertical-align:middle}
+.td-dim{font-weight:600;color:#344054}
+.td-val{color:#3F55E0;font-weight:700}
+.td-ref{color:#98A2B3;font-size:11px}
+.td-st{font-size:14px}
+.actions-title{font-size:12px;font-weight:800;color:#344054;margin-bottom:8px}
+.actions-list{display:flex;flex-direction:column;gap:8px}
+.action-item{padding:10px;border-radius:8px}
+.action-pri{font-size:10px;font-weight:800;margin-bottom:6px}
+.action-row{display:flex;gap:6px;font-size:11px;margin-bottom:3px;line-height:1.5}
+.action-label{font-weight:700;color:#344054;min-width:28px;flex-shrink:0}
+.action-owner{font-weight:700;padding:1px 6px;background:#E0E7FF;color:#3F55E0;border-radius:4px}
+
+/* 灵犀 */
+.linxi-wrap{margin-bottom:12px}
+.linxi-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #F3F4F6}
+.linxi-row:last-child{border-bottom:none}
+.linxi-label{font-size:11px;font-weight:700;color:#344054;min-width:60px;flex-shrink:0;padding-top:2px}
+.linxi-val{font-size:12px;color:#4B5563;line-height:1.6}
+.hw-list{display:flex;flex-wrap:wrap;gap:4px}
+.hw-tag{font-size:11px;padding:3px 8px;background:#F0FDF4;color:#166534;border-radius:20px}
+.hw-tag b{color:#15803D}
+.linxi-note{font-size:10px;color:#9CA3AF;margin-top:6px;padding:6px 8px;background:#F9FAFB;border-radius:6px}
+.script-box{padding:12px;background:#EEF0FC;border-radius:8px;margin-bottom:10px}
+.script-title{font-size:11px;font-weight:700;color:#3F55E0;margin-bottom:6px}
+.script-text{font-size:12px;color:#1E3A8A;line-height:1.7;margin-bottom:8px}
+.copy-btn{font-size:11px;font-weight:700;padding:5px 14px;background:#3F55E0;color:#fff;border:none;border-radius:6px;cursor:pointer}
+.copy-btn:active{opacity:.8}
+.upsell-box{padding:10px;background:#F9FAFB;border-radius:8px}
+.upsell-title{font-size:11px;font-weight:700;color:#344054;margin-bottom:6px}
+.upsell-items{display:flex;flex-direction:column;gap:4px}
+.upsell-item{font-size:11px;color:#4B5563;padding:4px 8px;background:#fff;border-radius:6px}
+
+/* Footer */
+.footer{text-align:center;font-size:11px;color:#C0C8D8;padding:24px 20px;background:#fff;border-top:1px solid #EAECF0;margin-top:16px}
+
+/* 移动端 */
+@media(max-width:640px){
+  .layout{flex-direction:column}
+  .side-nav{display:none}
+  .wang-metrics{grid-template-columns:repeat(2,1fr)}
+  .trend-mini{display:none}
+  .summary-bar .sb-num{font-size:22px}
+  .metrics-table .td-ref{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">📊 账户诊断看板 · 望闻问切</div>
+      <div class="header-sub">行业一组（跨境-亚洲+中东）· 秋子</div>
+    </div>
+    <div>
+      <div class="header-time">16:10</div>
+      <div class="header-date">4月29日 周三</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="summary-bar">
+  <div class="sb-item" style="border-top:3px solid #EF4444">
+    <div class="sb-num" style="color:#EF4444">2</div>
+    <div class="sb-lbl">🔴 需立即处理</div>
+  </div>
+  <div class="sb-item" style="border-top:3px solid #3F55E0">
+    <div class="sb-num" style="color:#3F55E0">3</div>
+    <div class="sb-lbl">⚡ 撞线预警</div>
+  </div>
+  <div class="sb-item" style="border-top:3px solid #F97316">
+    <div class="sb-num" style="color:#F97316">0</div>
+    <div class="sb-lbl">🟠 重点关注</div>
+  </div>
+  <div class="sb-item" style="border-top:3px solid #22C55E">
+    <div class="sb-num" style="color:#22C55E">0</div>
+    <div class="sb-lbl">✅ 运营正常</div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="layout">
+    <div class="side-nav">
+      <div class="nav-title">账户导航</div>
+      <a class="nav-link" href="#card-0" style="border-left:3px solid #EF4444">域见旅行-酒店预</a><a class="nav-link" href="#card-1" style="border-left:3px solid #EF4444">ctgo</a><a class="nav-link" href="#card-2" style="border-left:3px solid #3F55E0">ACPS包车</a><a class="nav-link" href="#card-3" style="border-left:3px solid #3F55E0">ONE DAY </a><a class="nav-link" href="#card-4" style="border-left:3px solid #3F55E0">Soneva</a>
+    </div>
+    <div class="cards-area">
+      
+<div class="diag-card" id="card-0" style="border-top:4px solid #EF4444">
+  <!-- 卡片头 -->
+  <div class="card-head">
+    <div class="card-head-left">
+      <div class="card-name">域见旅行-酒店预订</div>
+      <div class="card-meta">旅游出行 · 目标：线索收集 · 域而见己旅行</div>
+    </div>
+    <div class="card-head-right">
+      <div class="level-badge" style="background:#EF444418;color:#EF4444">🔴 需立即处理</div>
+    </div>
+  </div>
+  <div class="tag-row"><span class="atag" style="background:#EF444418;color:#EF4444">当日停投</span></div>
+
+  <!-- 四步诊断 Tabs -->
+  <div class="step-tabs">
+    <div class="step-tab active" data-card="0" data-step="wang">🔍 望</div>
+    <div class="step-tab" data-card="0" data-step="wen">👂 闻</div>
+    <div class="step-tab" data-card="0" data-step="wen2">💬 问</div>
+    <div class="step-tab" data-card="0" data-step="qie">✂️ 切</div>
+    <div class="step-tab" data-card="0" data-step="linxi">🔮 灵犀</div>
+  </div>
+
+  <!-- 望 -->
+  <div class="step-content active" id="step-0-wang">
+    <div class="step-title">🔍 望 · 收入盯盘</div>
+    <div class="wang-metrics">
+      <div class="wm-box">
+        <div class="wm-val">¥0</div>
+        <div class="wm-lbl">今日实时消耗</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val">¥953</div>
+        <div class="wm-lbl">7日均值</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val" style="color:#EF4444">-100%</div>
+        <div class="wm-lbl">日环比</div>
+      </div>
+      <div class="wm-box trend-mini">
+        <div class="mbars"><div class="mbar" style="height:36px;opacity:0.3;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.4;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.5;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.6;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.7;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.8;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.9;background:#EF4444"></div></div>
+        <div class="wm-lbl">7日趋势</div>
+      </div>
+    </div>
+    <div class="wang-status">整体状态：<b style="color:#EF4444">🔴 异常</b> · 消耗趋势：骤降</div>
+    <div class="remark-box">
+      <div class="remark-title">💡 异动说明</div>
+      <div class="remark-text">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
+    </div>
+  </div>
+
+  <!-- 闻 -->
+  <div class="step-content" id="step-0-wen">
+    <div class="step-title">👂 闻 · 问题排查</div>
+    <div class="issue-list"><div class="issue-item" style="border-left:3px solid #EF4444">
+  <span class="issue-icon">🔴</span>
+  <div><div class="issue-text">账户当日消耗为0，触发停投预警</div><div class="issue-action">→ 核查计划状态/余额/审核情况</div></div>
+</div></div>
+    <div class="排查提示">
+      <div class="check-title">排查路径（账户→计划→单元→创意）</div>
+      <div class="check-steps">
+        <span class="cs">① 预算是否撞线/分配不均</span>
+        <span class="cs">② 出价是否偏离系统建议区间</span>
+        <span class="cs">③ 定向人群规模是否≥3000万（信息流）/≥50词（搜索）</span>
+        <span class="cs">④ 素材CTR是否低于行业均值</span>
+        <span class="cs">⑤ 是否处于学习期且频繁调整</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问 -->
+  <div class="step-content" id="step-0-wen2">
+    <div class="step-title">💬 问 · 策略对齐</div>
+    <div class="wen2-goal">
+      <div class="goal-chip">营销目标：<b>线索收集</b></div>
+      <div class="goal-chip">赛道：<b>旅游出行</b></div>
+    </div>
+    <div class="wen2-tips">
+      <div class="tips-title">对应该目标，核心关注点：</div>
+      <ul class="tips-list"><li>私信进线数和15s首响率是核心KPI</li><li>表单设计需精简，≤3个必填项</li><li>线索跟进<1h有效转化率最高</li></ul>
+    </div>
+    <div class="auth-notice">
+      <div class="auth-title">📥 数据补充建议</div>
+      <div class="auth-item">【待授权】聚光后台数据中心 API → 获取真实 CTR/CVR/ROI/计划健康度</div>
+      <div class="auth-item">【待授权】灵犀竞品模块 → 获取实时搜索词趋势/SOC/人群迁移</div>
+      <div class="auth-item">【待授权】企业号后台 → 获取笔记互动/私信量/客服响应数据</div>
+    </div>
+  </div>
+
+  <!-- 切 -->
+  <div class="step-content" id="step-0-qie">
+    <div class="step-title">✂️ 切 · 场景诊断（线索收集）</div>
+    <div class="metrics-table-wrap">
+      <table class="metrics-table">
+        <thead><tr><th>维度</th><th>当前数据</th><th>行业参考</th><th>状态</th></tr></thead>
+        <tbody><tr><td class="td-dim">私信进线数</td><td class="td-val">【待授权】聚光</td><td class="td-ref">-</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">有效表单率</td><td class="td-val">【待授权】聚光</td><td class="td-ref">≥30%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">15s首响率</td><td class="td-val">【待授权】企业号</td><td class="td-ref">≥85%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">线索成本CPL</td><td class="td-val">【待授权】聚光</td><td class="td-ref">行业均值-20%</td><td class="td-st">🔵</td></tr></tbody>
+      </table>
+    </div>
+    <div class="actions-title">🎯 今日可执行动作</div>
+    <div class="actions-list">
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>账户停投，线索获取中断</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>紧急排查：余额→计划状态→素材审核→出价</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>线索恢复正常流入</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">投手</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>私信承接待确认</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>确认私信自动回复已配置，客服响应时间<30s</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>开口率提升至15%+</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">客服</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #F59E0B;background:#FFFBEB">
+  <div class="action-pri" style="color:#F59E0B">🟡 本周</div>
+  <div class="action-row"><span class="action-label">问题</span><span>表单转化链路优化</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>表单字段精简至≤3个，加进度条和隐私承诺</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>表单转化率+10~15%</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">运营</span></div>
+</div></div>
+  </div>
+
+  <!-- 灵犀 -->
+  <div class="step-content" id="step-0-linxi">
+    <div class="step-title">🔮 灵犀机会洞察</div>
+    
+<div class="linxi-wrap">
+  <div class="linxi-row"><span class="linxi-label">🔥 飙升词</span><div class="hw-list"><span class="hw-tag">📈 泰国旅行攻略 <b>+85%</b></span><span class="hw-tag">📈 酒店推荐 <b>+62%</b></span><span class="hw-tag">📈 海岛度假 <b>+48%</b></span></div></div>
+  <div class="linxi-row"><span class="linxi-label">👥 目标人群</span><span class="linxi-val">25-35岁都市白领，亲子/情侣游意向强</span></div>
+  <div class="linxi-row"><span class="linxi-label">🎯 竞品空档</span><span class="linxi-val">竞品在"目的地+攻略"词投放较弱，可卡位内容种草</span></div>
+  <div class="linxi-note">⚠️ 【数据来源：灵犀行业大盘·示意参考】实时精准数据需灵犀API授权后替换</div>
+</div>
+    <div class="script-box">
+      <div class="script-title">💬 销售跟进话术（内部）</div>
+      <div class="script-text">"「域见旅行-酒店预订」今天帮您跑了下聚光数据，发现竞品在"目的地+攻略"词投放较弱，可卡位内容种草，我们有个快速卡位方案，方便10分钟同步下吗？"</div>
+      <button class="copy-btn" onclick="copyScript(this)">复制话术</button>
+    </div>
+    <div class="upsell-box">
+      <div class="upsell-title">✨ 一键增值方案</div>
+      <div class="upsell-items">
+        <div class="upsell-item">1️⃣ 《3天快测计划表》</div>
+        <div class="upsell-item">2️⃣ 《灵犀飙升词内容脚本》</div>
+        <div class="upsell-item">3️⃣ 《线索链路优化SOP》</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="diag-card" id="card-1" style="border-top:4px solid #EF4444">
+  <!-- 卡片头 -->
+  <div class="card-head">
+    <div class="card-head-left">
+      <div class="card-name">ctgo</div>
+      <div class="card-meta">旅游出行 · 目标：线索收集 · （自投）ctgo</div>
+    </div>
+    <div class="card-head-right">
+      <div class="level-badge" style="background:#EF444418;color:#EF4444">🔴 需立即处理</div>
+    </div>
+  </div>
+  <div class="tag-row"><span class="atag" style="background:#EF444418;color:#EF4444">当日停投</span></div>
+
+  <!-- 四步诊断 Tabs -->
+  <div class="step-tabs">
+    <div class="step-tab active" data-card="1" data-step="wang">🔍 望</div>
+    <div class="step-tab" data-card="1" data-step="wen">👂 闻</div>
+    <div class="step-tab" data-card="1" data-step="wen2">💬 问</div>
+    <div class="step-tab" data-card="1" data-step="qie">✂️ 切</div>
+    <div class="step-tab" data-card="1" data-step="linxi">🔮 灵犀</div>
+  </div>
+
+  <!-- 望 -->
+  <div class="step-content active" id="step-1-wang">
+    <div class="step-title">🔍 望 · 收入盯盘</div>
+    <div class="wang-metrics">
+      <div class="wm-box">
+        <div class="wm-val">¥0</div>
+        <div class="wm-lbl">今日实时消耗</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val">¥424</div>
+        <div class="wm-lbl">7日均值</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val" style="color:#EF4444">-100%</div>
+        <div class="wm-lbl">日环比</div>
+      </div>
+      <div class="wm-box trend-mini">
+        <div class="mbars"><div class="mbar" style="height:36px;opacity:0.3;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.4;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.5;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.6;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.7;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.8;background:#EF4444"></div><div class="mbar" style="height:36px;opacity:0.9;background:#EF4444"></div></div>
+        <div class="wm-lbl">7日趋势</div>
+      </div>
+    </div>
+    <div class="wang-status">整体状态：<b style="color:#EF4444">🔴 异常</b> · 消耗趋势：骤降</div>
+    <div class="remark-box">
+      <div class="remark-title">💡 异动说明</div>
+      <div class="remark-text">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
+    </div>
+  </div>
+
+  <!-- 闻 -->
+  <div class="step-content" id="step-1-wen">
+    <div class="step-title">👂 闻 · 问题排查</div>
+    <div class="issue-list"><div class="issue-item" style="border-left:3px solid #EF4444">
+  <span class="issue-icon">🔴</span>
+  <div><div class="issue-text">账户当日消耗为0，触发停投预警</div><div class="issue-action">→ 核查计划状态/余额/审核情况</div></div>
+</div></div>
+    <div class="排查提示">
+      <div class="check-title">排查路径（账户→计划→单元→创意）</div>
+      <div class="check-steps">
+        <span class="cs">① 预算是否撞线/分配不均</span>
+        <span class="cs">② 出价是否偏离系统建议区间</span>
+        <span class="cs">③ 定向人群规模是否≥3000万（信息流）/≥50词（搜索）</span>
+        <span class="cs">④ 素材CTR是否低于行业均值</span>
+        <span class="cs">⑤ 是否处于学习期且频繁调整</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问 -->
+  <div class="step-content" id="step-1-wen2">
+    <div class="step-title">💬 问 · 策略对齐</div>
+    <div class="wen2-goal">
+      <div class="goal-chip">营销目标：<b>线索收集</b></div>
+      <div class="goal-chip">赛道：<b>旅游出行</b></div>
+    </div>
+    <div class="wen2-tips">
+      <div class="tips-title">对应该目标，核心关注点：</div>
+      <ul class="tips-list"><li>私信进线数和15s首响率是核心KPI</li><li>表单设计需精简，≤3个必填项</li><li>线索跟进<1h有效转化率最高</li></ul>
+    </div>
+    <div class="auth-notice">
+      <div class="auth-title">📥 数据补充建议</div>
+      <div class="auth-item">【待授权】聚光后台数据中心 API → 获取真实 CTR/CVR/ROI/计划健康度</div>
+      <div class="auth-item">【待授权】灵犀竞品模块 → 获取实时搜索词趋势/SOC/人群迁移</div>
+      <div class="auth-item">【待授权】企业号后台 → 获取笔记互动/私信量/客服响应数据</div>
+    </div>
+  </div>
+
+  <!-- 切 -->
+  <div class="step-content" id="step-1-qie">
+    <div class="step-title">✂️ 切 · 场景诊断（线索收集）</div>
+    <div class="metrics-table-wrap">
+      <table class="metrics-table">
+        <thead><tr><th>维度</th><th>当前数据</th><th>行业参考</th><th>状态</th></tr></thead>
+        <tbody><tr><td class="td-dim">私信进线数</td><td class="td-val">【待授权】聚光</td><td class="td-ref">-</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">有效表单率</td><td class="td-val">【待授权】聚光</td><td class="td-ref">≥30%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">15s首响率</td><td class="td-val">【待授权】企业号</td><td class="td-ref">≥85%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">线索成本CPL</td><td class="td-val">【待授权】聚光</td><td class="td-ref">行业均值-20%</td><td class="td-st">🔵</td></tr></tbody>
+      </table>
+    </div>
+    <div class="actions-title">🎯 今日可执行动作</div>
+    <div class="actions-list">
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>账户停投，线索获取中断</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>紧急排查：余额→计划状态→素材审核→出价</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>线索恢复正常流入</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">投手</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>私信承接待确认</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>确认私信自动回复已配置，客服响应时间<30s</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>开口率提升至15%+</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">客服</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #F59E0B;background:#FFFBEB">
+  <div class="action-pri" style="color:#F59E0B">🟡 本周</div>
+  <div class="action-row"><span class="action-label">问题</span><span>表单转化链路优化</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>表单字段精简至≤3个，加进度条和隐私承诺</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>表单转化率+10~15%</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">运营</span></div>
+</div></div>
+  </div>
+
+  <!-- 灵犀 -->
+  <div class="step-content" id="step-1-linxi">
+    <div class="step-title">🔮 灵犀机会洞察</div>
+    
+<div class="linxi-wrap">
+  <div class="linxi-row"><span class="linxi-label">🔥 飙升词</span><div class="hw-list"><span class="hw-tag">📈 泰国旅行攻略 <b>+85%</b></span><span class="hw-tag">📈 酒店推荐 <b>+62%</b></span><span class="hw-tag">📈 海岛度假 <b>+48%</b></span></div></div>
+  <div class="linxi-row"><span class="linxi-label">👥 目标人群</span><span class="linxi-val">25-35岁都市白领，亲子/情侣游意向强</span></div>
+  <div class="linxi-row"><span class="linxi-label">🎯 竞品空档</span><span class="linxi-val">竞品在"目的地+攻略"词投放较弱，可卡位内容种草</span></div>
+  <div class="linxi-note">⚠️ 【数据来源：灵犀行业大盘·示意参考】实时精准数据需灵犀API授权后替换</div>
+</div>
+    <div class="script-box">
+      <div class="script-title">💬 销售跟进话术（内部）</div>
+      <div class="script-text">"「ctgo」今天帮您跑了下聚光数据，发现竞品在"目的地+攻略"词投放较弱，可卡位内容种草，我们有个快速卡位方案，方便10分钟同步下吗？"</div>
+      <button class="copy-btn" onclick="copyScript(this)">复制话术</button>
+    </div>
+    <div class="upsell-box">
+      <div class="upsell-title">✨ 一键增值方案</div>
+      <div class="upsell-items">
+        <div class="upsell-item">1️⃣ 《3天快测计划表》</div>
+        <div class="upsell-item">2️⃣ 《灵犀飙升词内容脚本》</div>
+        <div class="upsell-item">3️⃣ 《线索链路优化SOP》</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="diag-card" id="card-2" style="border-top:4px solid #3F55E0">
+  <!-- 卡片头 -->
+  <div class="card-head">
+    <div class="card-head-left">
+      <div class="card-name">ACPS包车</div>
+      <div class="card-meta">汽车出行 · 目标：线索收集 · ACPS包车</div>
+    </div>
+    <div class="card-head-right">
+      <div class="level-badge" style="background:#3F55E018;color:#3F55E0">⚡ 撞线预警</div>
+    </div>
+  </div>
+  <div class="tag-row"><span class="atag" style="background:#3F55E018;color:#3F55E0">当日预算撞线</span></div>
+
+  <!-- 四步诊断 Tabs -->
+  <div class="step-tabs">
+    <div class="step-tab active" data-card="2" data-step="wang">🔍 望</div>
+    <div class="step-tab" data-card="2" data-step="wen">👂 闻</div>
+    <div class="step-tab" data-card="2" data-step="wen2">💬 问</div>
+    <div class="step-tab" data-card="2" data-step="qie">✂️ 切</div>
+    <div class="step-tab" data-card="2" data-step="linxi">🔮 灵犀</div>
+  </div>
+
+  <!-- 望 -->
+  <div class="step-content active" id="step-2-wang">
+    <div class="step-title">🔍 望 · 收入盯盘</div>
+    <div class="wang-metrics">
+      <div class="wm-box">
+        <div class="wm-val">¥1,525</div>
+        <div class="wm-lbl">今日实时消耗</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val">¥1,223</div>
+        <div class="wm-lbl">7日均值</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val" style="color:#EF4444">+0%</div>
+        <div class="wm-lbl">日环比</div>
+      </div>
+      <div class="wm-box trend-mini">
+        <div class="mbars"><div class="mbar" style="height:36px;opacity:0.3;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.4;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.5;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.6;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.7;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.8;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.9;background:#3F55E0"></div><div class="mbar today" style="height:40px;background:#3F55E0"></div></div>
+        <div class="wm-lbl">7日趋势</div>
+      </div>
+    </div>
+    <div class="wang-status">整体状态：<b style="color:#3F55E0">🟡 预警</b> · 消耗趋势：轻微下滑</div>
+    <div class="remark-box">
+      <div class="remark-title">💡 异动说明</div>
+      <div class="remark-text">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+    </div>
+  </div>
+
+  <!-- 闻 -->
+  <div class="step-content" id="step-2-wen">
+    <div class="step-title">👂 闻 · 问题排查</div>
+    <div class="issue-list"><div class="issue-item" style="border-left:3px solid #3F55E0">
+  <span class="issue-icon">⚡</span>
+  <div><div class="issue-text">当日消耗已接近日预算上限，有撞线风险</div><div class="issue-action">→ 建议提前追加预算或调整日预算上限</div></div>
+</div></div>
+    <div class="排查提示">
+      <div class="check-title">排查路径（账户→计划→单元→创意）</div>
+      <div class="check-steps">
+        <span class="cs">① 预算是否撞线/分配不均</span>
+        <span class="cs">② 出价是否偏离系统建议区间</span>
+        <span class="cs">③ 定向人群规模是否≥3000万（信息流）/≥50词（搜索）</span>
+        <span class="cs">④ 素材CTR是否低于行业均值</span>
+        <span class="cs">⑤ 是否处于学习期且频繁调整</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问 -->
+  <div class="step-content" id="step-2-wen2">
+    <div class="step-title">💬 问 · 策略对齐</div>
+    <div class="wen2-goal">
+      <div class="goal-chip">营销目标：<b>线索收集</b></div>
+      <div class="goal-chip">赛道：<b>汽车出行</b></div>
+    </div>
+    <div class="wen2-tips">
+      <div class="tips-title">对应该目标，核心关注点：</div>
+      <ul class="tips-list"><li>私信进线数和15s首响率是核心KPI</li><li>表单设计需精简，≤3个必填项</li><li>线索跟进<1h有效转化率最高</li></ul>
+    </div>
+    <div class="auth-notice">
+      <div class="auth-title">📥 数据补充建议</div>
+      <div class="auth-item">【待授权】聚光后台数据中心 API → 获取真实 CTR/CVR/ROI/计划健康度</div>
+      <div class="auth-item">【待授权】灵犀竞品模块 → 获取实时搜索词趋势/SOC/人群迁移</div>
+      <div class="auth-item">【待授权】企业号后台 → 获取笔记互动/私信量/客服响应数据</div>
+    </div>
+  </div>
+
+  <!-- 切 -->
+  <div class="step-content" id="step-2-qie">
+    <div class="step-title">✂️ 切 · 场景诊断（线索收集）</div>
+    <div class="metrics-table-wrap">
+      <table class="metrics-table">
+        <thead><tr><th>维度</th><th>当前数据</th><th>行业参考</th><th>状态</th></tr></thead>
+        <tbody><tr><td class="td-dim">私信进线数</td><td class="td-val">【待授权】聚光</td><td class="td-ref">-</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">有效表单率</td><td class="td-val">【待授权】聚光</td><td class="td-ref">≥30%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">15s首响率</td><td class="td-val">【待授权】企业号</td><td class="td-ref">≥85%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">线索成本CPL</td><td class="td-val">【待授权】聚光</td><td class="td-ref">行业均值-20%</td><td class="td-st">🔵</td></tr></tbody>
+      </table>
+    </div>
+    <div class="actions-title">🎯 今日可执行动作</div>
+    <div class="actions-list">
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>私信承接待确认</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>确认私信自动回复已配置，客服响应时间<30s</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>开口率提升至15%+</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">客服</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #F59E0B;background:#FFFBEB">
+  <div class="action-pri" style="color:#F59E0B">🟡 本周</div>
+  <div class="action-row"><span class="action-label">问题</span><span>表单转化链路优化</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>表单字段精简至≤3个，加进度条和隐私承诺</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>表单转化率+10~15%</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">运营</span></div>
+</div></div>
+  </div>
+
+  <!-- 灵犀 -->
+  <div class="step-content" id="step-2-linxi">
+    <div class="step-title">🔮 灵犀机会洞察</div>
+    
+<div class="linxi-wrap">
+  <div class="linxi-row"><span class="linxi-label">🔥 飙升词</span><div class="hw-list"><span class="hw-tag">📈 租车攻略 <b>+76%</b></span><span class="hw-tag">📈 自驾游 <b>+62%</b></span><span class="hw-tag">📈 包车服务 <b>+50%</b></span></div></div>
+  <div class="linxi-row"><span class="linxi-label">👥 目标人群</span><span class="linxi-val">28-45岁，有出行计划，注重服务品质</span></div>
+  <div class="linxi-row"><span class="linxi-label">🎯 竞品空档</span><span class="linxi-val">"目的地+包车"精准词竞争较弱，可重点布局</span></div>
+  <div class="linxi-note">⚠️ 【数据来源：灵犀行业大盘·示意参考】实时精准数据需灵犀API授权后替换</div>
+</div>
+    <div class="script-box">
+      <div class="script-title">💬 销售跟进话术（内部）</div>
+      <div class="script-text">"「ACPS包车」今天帮您跑了下聚光数据，发现"目的地+包车"精准词竞争较弱，可重点布局，我们有个快速卡位方案，方便10分钟同步下吗？"</div>
+      <button class="copy-btn" onclick="copyScript(this)">复制话术</button>
+    </div>
+    <div class="upsell-box">
+      <div class="upsell-title">✨ 一键增值方案</div>
+      <div class="upsell-items">
+        <div class="upsell-item">1️⃣ 《3天快测计划表》</div>
+        <div class="upsell-item">2️⃣ 《灵犀飙升词内容脚本》</div>
+        <div class="upsell-item">3️⃣ 《线索链路优化SOP》</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="diag-card" id="card-3" style="border-top:4px solid #3F55E0">
+  <!-- 卡片头 -->
+  <div class="card-head">
+    <div class="card-head-left">
+      <div class="card-name">ONE DAY MASTER泰服泰妆写真馆</div>
+      <div class="card-meta">旅游出行 · 目标：线索收集 · 微亿璀璨（ONE DAY MASTER泰服泰妆写真馆）2</div>
+    </div>
+    <div class="card-head-right">
+      <div class="level-badge" style="background:#3F55E018;color:#3F55E0">⚡ 撞线预警</div>
+    </div>
+  </div>
+  <div class="tag-row"><span class="atag" style="background:#3F55E018;color:#3F55E0">当日预算撞线</span></div>
+
+  <!-- 四步诊断 Tabs -->
+  <div class="step-tabs">
+    <div class="step-tab active" data-card="3" data-step="wang">🔍 望</div>
+    <div class="step-tab" data-card="3" data-step="wen">👂 闻</div>
+    <div class="step-tab" data-card="3" data-step="wen2">💬 问</div>
+    <div class="step-tab" data-card="3" data-step="qie">✂️ 切</div>
+    <div class="step-tab" data-card="3" data-step="linxi">🔮 灵犀</div>
+  </div>
+
+  <!-- 望 -->
+  <div class="step-content active" id="step-3-wang">
+    <div class="step-title">🔍 望 · 收入盯盘</div>
+    <div class="wang-metrics">
+      <div class="wm-box">
+        <div class="wm-val">¥511</div>
+        <div class="wm-lbl">今日实时消耗</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val">¥1,197</div>
+        <div class="wm-lbl">7日均值</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val" style="color:#22C55E">+52%</div>
+        <div class="wm-lbl">日环比</div>
+      </div>
+      <div class="wm-box trend-mini">
+        <div class="mbars"><div class="mbar" style="height:36px;opacity:0.3;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.4;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.5;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.6;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.7;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.8;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.9;background:#3F55E0"></div><div class="mbar today" style="height:24px;background:#3F55E0"></div></div>
+        <div class="wm-lbl">7日趋势</div>
+      </div>
+    </div>
+    <div class="wang-status">整体状态：<b style="color:#3F55E0">🟡 预警</b> · 消耗趋势：持续上升</div>
+    <div class="remark-box">
+      <div class="remark-title">💡 异动说明</div>
+      <div class="remark-text">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+    </div>
+  </div>
+
+  <!-- 闻 -->
+  <div class="step-content" id="step-3-wen">
+    <div class="step-title">👂 闻 · 问题排查</div>
+    <div class="issue-list"><div class="issue-item" style="border-left:3px solid #3F55E0">
+  <span class="issue-icon">⚡</span>
+  <div><div class="issue-text">当日消耗已接近日预算上限，有撞线风险</div><div class="issue-action">→ 建议提前追加预算或调整日预算上限</div></div>
+</div></div>
+    <div class="排查提示">
+      <div class="check-title">排查路径（账户→计划→单元→创意）</div>
+      <div class="check-steps">
+        <span class="cs">① 预算是否撞线/分配不均</span>
+        <span class="cs">② 出价是否偏离系统建议区间</span>
+        <span class="cs">③ 定向人群规模是否≥3000万（信息流）/≥50词（搜索）</span>
+        <span class="cs">④ 素材CTR是否低于行业均值</span>
+        <span class="cs">⑤ 是否处于学习期且频繁调整</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问 -->
+  <div class="step-content" id="step-3-wen2">
+    <div class="step-title">💬 问 · 策略对齐</div>
+    <div class="wen2-goal">
+      <div class="goal-chip">营销目标：<b>线索收集</b></div>
+      <div class="goal-chip">赛道：<b>旅游出行</b></div>
+    </div>
+    <div class="wen2-tips">
+      <div class="tips-title">对应该目标，核心关注点：</div>
+      <ul class="tips-list"><li>私信进线数和15s首响率是核心KPI</li><li>表单设计需精简，≤3个必填项</li><li>线索跟进<1h有效转化率最高</li></ul>
+    </div>
+    <div class="auth-notice">
+      <div class="auth-title">📥 数据补充建议</div>
+      <div class="auth-item">【待授权】聚光后台数据中心 API → 获取真实 CTR/CVR/ROI/计划健康度</div>
+      <div class="auth-item">【待授权】灵犀竞品模块 → 获取实时搜索词趋势/SOC/人群迁移</div>
+      <div class="auth-item">【待授权】企业号后台 → 获取笔记互动/私信量/客服响应数据</div>
+    </div>
+  </div>
+
+  <!-- 切 -->
+  <div class="step-content" id="step-3-qie">
+    <div class="step-title">✂️ 切 · 场景诊断（线索收集）</div>
+    <div class="metrics-table-wrap">
+      <table class="metrics-table">
+        <thead><tr><th>维度</th><th>当前数据</th><th>行业参考</th><th>状态</th></tr></thead>
+        <tbody><tr><td class="td-dim">私信进线数</td><td class="td-val">【待授权】聚光</td><td class="td-ref">-</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">有效表单率</td><td class="td-val">【待授权】聚光</td><td class="td-ref">≥30%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">15s首响率</td><td class="td-val">【待授权】企业号</td><td class="td-ref">≥85%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">线索成本CPL</td><td class="td-val">【待授权】聚光</td><td class="td-ref">行业均值-20%</td><td class="td-st">🔵</td></tr></tbody>
+      </table>
+    </div>
+    <div class="actions-title">🎯 今日可执行动作</div>
+    <div class="actions-list">
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>私信承接待确认</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>确认私信自动回复已配置，客服响应时间<30s</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>开口率提升至15%+</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">客服</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #F59E0B;background:#FFFBEB">
+  <div class="action-pri" style="color:#F59E0B">🟡 本周</div>
+  <div class="action-row"><span class="action-label">问题</span><span>表单转化链路优化</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>表单字段精简至≤3个，加进度条和隐私承诺</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>表单转化率+10~15%</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">运营</span></div>
+</div></div>
+  </div>
+
+  <!-- 灵犀 -->
+  <div class="step-content" id="step-3-linxi">
+    <div class="step-title">🔮 灵犀机会洞察</div>
+    
+<div class="linxi-wrap">
+  <div class="linxi-row"><span class="linxi-label">🔥 飙升词</span><div class="hw-list"><span class="hw-tag">📈 泰国旅行攻略 <b>+85%</b></span><span class="hw-tag">📈 酒店推荐 <b>+62%</b></span><span class="hw-tag">📈 海岛度假 <b>+48%</b></span></div></div>
+  <div class="linxi-row"><span class="linxi-label">👥 目标人群</span><span class="linxi-val">25-35岁都市白领，亲子/情侣游意向强</span></div>
+  <div class="linxi-row"><span class="linxi-label">🎯 竞品空档</span><span class="linxi-val">竞品在"目的地+攻略"词投放较弱，可卡位内容种草</span></div>
+  <div class="linxi-note">⚠️ 【数据来源：灵犀行业大盘·示意参考】实时精准数据需灵犀API授权后替换</div>
+</div>
+    <div class="script-box">
+      <div class="script-title">💬 销售跟进话术（内部）</div>
+      <div class="script-text">"「ONE DAY MASTER泰服泰妆写真馆」今天帮您跑了下聚光数据，发现竞品在"目的地+攻略"词投放较弱，可卡位内容种草，我们有个快速卡位方案，方便10分钟同步下吗？"</div>
+      <button class="copy-btn" onclick="copyScript(this)">复制话术</button>
+    </div>
+    <div class="upsell-box">
+      <div class="upsell-title">✨ 一键增值方案</div>
+      <div class="upsell-items">
+        <div class="upsell-item">1️⃣ 《3天快测计划表》</div>
+        <div class="upsell-item">2️⃣ 《灵犀飙升词内容脚本》</div>
+        <div class="upsell-item">3️⃣ 《线索链路优化SOP》</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="diag-card" id="card-4" style="border-top:4px solid #3F55E0">
+  <!-- 卡片头 -->
+  <div class="card-head">
+    <div class="card-head-left">
+      <div class="card-name">Soneva</div>
+      <div class="card-meta">旅游出行 · 目标：线索收集 · 辰以拾（Soneva）</div>
+    </div>
+    <div class="card-head-right">
+      <div class="level-badge" style="background:#3F55E018;color:#3F55E0">⚡ 撞线预警</div>
+    </div>
+  </div>
+  <div class="tag-row"><span class="atag" style="background:#3F55E018;color:#3F55E0">当日预算撞线</span></div>
+
+  <!-- 四步诊断 Tabs -->
+  <div class="step-tabs">
+    <div class="step-tab active" data-card="4" data-step="wang">🔍 望</div>
+    <div class="step-tab" data-card="4" data-step="wen">👂 闻</div>
+    <div class="step-tab" data-card="4" data-step="wen2">💬 问</div>
+    <div class="step-tab" data-card="4" data-step="qie">✂️ 切</div>
+    <div class="step-tab" data-card="4" data-step="linxi">🔮 灵犀</div>
+  </div>
+
+  <!-- 望 -->
+  <div class="step-content active" id="step-4-wang">
+    <div class="step-title">🔍 望 · 收入盯盘</div>
+    <div class="wang-metrics">
+      <div class="wm-box">
+        <div class="wm-val">¥924</div>
+        <div class="wm-lbl">今日实时消耗</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val">¥917</div>
+        <div class="wm-lbl">7日均值</div>
+      </div>
+      <div class="wm-box">
+        <div class="wm-val" style="color:#22C55E">+0%</div>
+        <div class="wm-lbl">日环比</div>
+      </div>
+      <div class="wm-box trend-mini">
+        <div class="mbars"><div class="mbar" style="height:36px;opacity:0.3;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.4;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.5;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.6;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.7;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.8;background:#3F55E0"></div><div class="mbar" style="height:36px;opacity:0.9;background:#3F55E0"></div><div class="mbar today" style="height:36px;background:#3F55E0"></div></div>
+        <div class="wm-lbl">7日趋势</div>
+      </div>
+    </div>
+    <div class="wang-status">整体状态：<b style="color:#3F55E0">🟡 预警</b> · 消耗趋势：撞线风险</div>
+    <div class="remark-box">
+      <div class="remark-title">💡 异动说明</div>
+      <div class="remark-text">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+    </div>
+  </div>
+
+  <!-- 闻 -->
+  <div class="step-content" id="step-4-wen">
+    <div class="step-title">👂 闻 · 问题排查</div>
+    <div class="issue-list"><div class="issue-item" style="border-left:3px solid #3F55E0">
+  <span class="issue-icon">⚡</span>
+  <div><div class="issue-text">当日消耗已接近日预算上限，有撞线风险</div><div class="issue-action">→ 建议提前追加预算或调整日预算上限</div></div>
+</div></div>
+    <div class="排查提示">
+      <div class="check-title">排查路径（账户→计划→单元→创意）</div>
+      <div class="check-steps">
+        <span class="cs">① 预算是否撞线/分配不均</span>
+        <span class="cs">② 出价是否偏离系统建议区间</span>
+        <span class="cs">③ 定向人群规模是否≥3000万（信息流）/≥50词（搜索）</span>
+        <span class="cs">④ 素材CTR是否低于行业均值</span>
+        <span class="cs">⑤ 是否处于学习期且频繁调整</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问 -->
+  <div class="step-content" id="step-4-wen2">
+    <div class="step-title">💬 问 · 策略对齐</div>
+    <div class="wen2-goal">
+      <div class="goal-chip">营销目标：<b>线索收集</b></div>
+      <div class="goal-chip">赛道：<b>旅游出行</b></div>
+    </div>
+    <div class="wen2-tips">
+      <div class="tips-title">对应该目标，核心关注点：</div>
+      <ul class="tips-list"><li>私信进线数和15s首响率是核心KPI</li><li>表单设计需精简，≤3个必填项</li><li>线索跟进<1h有效转化率最高</li></ul>
+    </div>
+    <div class="auth-notice">
+      <div class="auth-title">📥 数据补充建议</div>
+      <div class="auth-item">【待授权】聚光后台数据中心 API → 获取真实 CTR/CVR/ROI/计划健康度</div>
+      <div class="auth-item">【待授权】灵犀竞品模块 → 获取实时搜索词趋势/SOC/人群迁移</div>
+      <div class="auth-item">【待授权】企业号后台 → 获取笔记互动/私信量/客服响应数据</div>
+    </div>
+  </div>
+
+  <!-- 切 -->
+  <div class="step-content" id="step-4-qie">
+    <div class="step-title">✂️ 切 · 场景诊断（线索收集）</div>
+    <div class="metrics-table-wrap">
+      <table class="metrics-table">
+        <thead><tr><th>维度</th><th>当前数据</th><th>行业参考</th><th>状态</th></tr></thead>
+        <tbody><tr><td class="td-dim">私信进线数</td><td class="td-val">【待授权】聚光</td><td class="td-ref">-</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">有效表单率</td><td class="td-val">【待授权】聚光</td><td class="td-ref">≥30%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">15s首响率</td><td class="td-val">【待授权】企业号</td><td class="td-ref">≥85%</td><td class="td-st">🔵</td></tr><tr><td class="td-dim">线索成本CPL</td><td class="td-val">【待授权】聚光</td><td class="td-ref">行业均值-20%</td><td class="td-st">🔵</td></tr></tbody>
+      </table>
+    </div>
+    <div class="actions-title">🎯 今日可执行动作</div>
+    <div class="actions-list">
+<div class="action-item" style="border-left:3px solid #EF4444;background:#FEF2F2">
+  <div class="action-pri" style="color:#EF4444">🔴 24h内</div>
+  <div class="action-row"><span class="action-label">问题</span><span>私信承接待确认</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>确认私信自动回复已配置，客服响应时间<30s</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>开口率提升至15%+</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">客服</span></div>
+</div>
+<div class="action-item" style="border-left:3px solid #F59E0B;background:#FFFBEB">
+  <div class="action-pri" style="color:#F59E0B">🟡 本周</div>
+  <div class="action-row"><span class="action-label">问题</span><span>表单转化链路优化</span></div>
+  <div class="action-row"><span class="action-label">动作</span><span>表单字段精简至≤3个，加进度条和隐私承诺</span></div>
+  <div class="action-row"><span class="action-label">预期</span><span>表单转化率+10~15%</span></div>
+  <div class="action-row"><span class="action-label">负责</span><span class="action-owner">运营</span></div>
+</div></div>
+  </div>
+
+  <!-- 灵犀 -->
+  <div class="step-content" id="step-4-linxi">
+    <div class="step-title">🔮 灵犀机会洞察</div>
+    
+<div class="linxi-wrap">
+  <div class="linxi-row"><span class="linxi-label">🔥 飙升词</span><div class="hw-list"><span class="hw-tag">📈 泰国旅行攻略 <b>+85%</b></span><span class="hw-tag">📈 酒店推荐 <b>+62%</b></span><span class="hw-tag">📈 海岛度假 <b>+48%</b></span></div></div>
+  <div class="linxi-row"><span class="linxi-label">👥 目标人群</span><span class="linxi-val">25-35岁都市白领，亲子/情侣游意向强</span></div>
+  <div class="linxi-row"><span class="linxi-label">🎯 竞品空档</span><span class="linxi-val">竞品在"目的地+攻略"词投放较弱，可卡位内容种草</span></div>
+  <div class="linxi-note">⚠️ 【数据来源：灵犀行业大盘·示意参考】实时精准数据需灵犀API授权后替换</div>
+</div>
+    <div class="script-box">
+      <div class="script-title">💬 销售跟进话术（内部）</div>
+      <div class="script-text">"「Soneva」今天帮您跑了下聚光数据，发现竞品在"目的地+攻略"词投放较弱，可卡位内容种草，我们有个快速卡位方案，方便10分钟同步下吗？"</div>
+      <button class="copy-btn" onclick="copyScript(this)">复制话术</button>
+    </div>
+    <div class="upsell-box">
+      <div class="upsell-title">✨ 一键增值方案</div>
+      <div class="upsell-items">
+        <div class="upsell-item">1️⃣ 《3天快测计划表》</div>
+        <div class="upsell-item">2️⃣ 《灵犀飙升词内容脚本》</div>
+        <div class="upsell-item">3️⃣ 《线索链路优化SOP》</div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  数据来源：CRM 苍穹实时接口 · 灵犀行业大盘（示意）· 聚光/企业号（待授权）<br>
+  最后更新 2026-04-29 16:10 · 每日 09:00 自动刷新
+</div>
+
+<script>
+// Tab 切换（每张卡独立）
+document.querySelectorAll('.step-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const card = tab.dataset.card;
+    const step = tab.dataset.step;
+    document.querySelectorAll(`.step-tab[data-card="${card}"]`).forEach(t => t.classList.remove('active'));
+    document.querySelectorAll(`[id^="step-${card}-"]`).forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`step-${card}-${step}`).classList.add('active');
+  });
+});
+
+// 复制话术
+function copyScript(btn) {
+  const text = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '已复制✓';
+    setTimeout(() => btn.textContent = '复制话术', 1500);
+  }).catch(() => {
+    btn.textContent = '请手动复制';
+  });
+}
+
+// 平滑滚动
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+</script>
+</body>
+</html>
