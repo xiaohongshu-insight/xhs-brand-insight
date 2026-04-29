@@ -2,162 +2,513 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>CRM 诊断看板 · 4月29日 周三</title>
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif; background:#F7F8FC; color:#101828; min-height:100vh; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:#F4F5F9;color:#101828;min-height:100vh}
 
-.topbar { background:#3F55E0; color:#fff; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; box-shadow:0 2px 12px rgba(63,85,224,.25); }
-.topbar-title { font-size:15px; font-weight:800; letter-spacing:.3px; }
-.topbar-meta { font-size:11px; opacity:.8; text-align:right; line-height:1.6; }
+/* ===== Header ===== */
+.header{background:#3F55E0;color:#fff;padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(63,85,224,.3)}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+.header-title{font-size:16px;font-weight:800;letter-spacing:.2px}
+.header-sub{font-size:11px;opacity:.75;margin-top:2px}
+.header-right{text-align:right}
+.header-time{font-size:20px;font-weight:800;line-height:1}
+.header-date{font-size:11px;opacity:.75;margin-top:2px}
 
-.summary { display:flex; gap:0; background:#fff; border-bottom:1px solid #EAECF0; padding:16px 20px; overflow-x:auto; }
-.sum-item { display:flex; flex-direction:column; align-items:center; min-width:72px; gap:2px; }
-.sum-icon { font-size:20px; line-height:1; }
-.sum-num { font-size:24px; font-weight:800; color:#101828; line-height:1.1; }
-.sum-label { font-size:11px; color:#98A2B3; font-weight:500; }
+/* ===== 顶部告警条 ===== */
+.top-alert{background:#FEF2F2;border-bottom:1px solid #FECACA;padding:10px 20px;font-size:13px;color:#B91C1C;text-align:center}
+.top-alert b{font-weight:800}
 
-.content { max-width:640px; margin:0 auto; padding:16px 16px 32px; }
+/* ===== 摘要卡片 ===== */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:#fff;border-bottom:1px solid #EAECF0}
+.sc{padding:14px 8px 12px;text-align:center;border-right:1px solid #F3F4F6}
+.sc:last-child{border-right:none}
+.sc-num{font-size:28px;font-weight:800;line-height:1;margin-bottom:4px}
+.sc-row{display:flex;align-items:center;justify-content:center;gap:3px}
+.sc-lbl{font-size:10px;color:#98A2B3;font-weight:500}
 
-.section-label { font-size:11px; font-weight:700; color:#667085; letter-spacing:.8px; text-transform:uppercase; margin:16px 0 8px; }
+/* ===== Tab 导航 ===== */
+.tabs{display:flex;background:#fff;border-bottom:2px solid #EAECF0;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:56px;z-index:99}
+.tab{flex:none;padding:12px 20px;font-size:13px;font-weight:600;color:#98A2B3;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;white-space:nowrap;user-select:none}
+.tab.active{color:#3F55E0;border-bottom-color:#3F55E0}
 
-.card { border-radius:10px; padding:12px 14px; margin-bottom:8px; box-shadow:0 1px 4px rgba(16,24,40,.06); }
-.card-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-.dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-.cname { font-size:13px; font-weight:700; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.rate { font-size:12px; font-weight:800; flex-shrink:0; }
+/* ===== Tab 内容 ===== */
+.tab-content{display:none}
+.tab-content.active{display:block}
+.content-wrap{max-width:720px;margin:0 auto;padding:16px 16px 40px}
 
-.metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; background:rgba(255,255,255,.6); border-radius:8px; padding:8px 10px; margin-bottom:8px; }
-.mv { font-size:13px; font-weight:700; color:#101828; }
-.ml { font-size:10px; color:#98A2B3; margin-top:1px; }
+/* ===== 账户卡片 ===== */
+.account-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(16,24,40,.07);transition:box-shadow .15s}
+.account-card:hover{box-shadow:0 3px 12px rgba(16,24,40,.1)}
+.ac-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px}
+.ac-left{flex:1;min-width:0}
+.ac-name{font-size:14px;font-weight:800;color:#101828;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vs-name{font-size:11px;color:#98A2B3;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.level-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
 
-.tags { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px; }
-.tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
-.remark { font-size:11px; color:#667085; line-height:1.5; padding:5px 8px; background:rgba(255,255,255,.5); border-radius:6px; margin-top:4px; }
+.ac-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.metric-box{background:#F7F8FC;border-radius:8px;padding:8px;}
+.metric-val{font-size:13px;font-weight:800;color:#101828;white-space:nowrap}
+.metric-lbl{font-size:10px;color:#98A2B3;margin-top:2px}
+.trend-box{display:flex;flex-direction:column;justify-content:space-between}
+.mini-bars{display:flex;align-items:flex-end;gap:2px;height:36px}
+.bar{flex:1;border-radius:2px 2px 0 0;min-width:4px}
+.today-bar{outline:2px solid #fff}
 
-.empty { text-align:center; color:#98A2B3; padding:48px 0; font-size:13px; }
+.tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.remark{font-size:11px;color:#667085;line-height:1.5;padding:6px 10px;background:#F7F8FC;border-radius:6px;margin-top:4px}
 
-.footer { text-align:center; font-size:11px; color:#C0C8D8; padding:16px; }
+/* ===== 分组标签 ===== */
+.group-label{font-size:12px;font-weight:700;color:#344054;padding:6px 10px;margin:12px 0 6px;border-radius:6px;background:#fff;padding-left:12px}
 
+/* ===== 撞线卡片 ===== */
+.crash-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #BFDBFE;box-shadow:0 1px 4px rgba(63,85,224,.08)}
+.crash-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.crash-icon{font-size:20px}
+.crash-name{font-size:14px;font-weight:800;color:#1E3A8A}
+.crash-desc{font-size:12px;color:#1E40AF;margin-bottom:8px;line-height:1.6}
+.crash-desc b{font-weight:800}
+.crash-bar-wrap{background:#DBEAFE;border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px}
+.crash-bar-fill{height:100%;background:linear-gradient(90deg,#3F55E0,#6675E8);border-radius:8px;transition:width .3s}
+.crash-remark{font-size:11px;color:#3730A3;line-height:1.5}
+
+/* ===== 空状态 ===== */
+.empty-state{text-align:center;color:#98A2B3;font-size:13px;padding:48px 20px;line-height:2}
+
+/* ===== Footer ===== */
+.footer{text-align:center;font-size:11px;color:#C0C8D8;padding:20px;background:#fff;border-top:1px solid #EAECF0;margin-top:16px}
+
+/* ===== 移动端适配 ===== */
 @media(max-width:480px){
-  .topbar { padding:12px 16px; }
-  .content { padding:12px 12px 24px; }
-  .sum-item { min-width:60px; }
-  .sum-num { font-size:20px; }
+  .header-inner{padding:12px 16px}
+  .header-title{font-size:14px}
+  .content-wrap{padding:12px 12px 32px}
+  .ac-metrics{grid-template-columns:repeat(2,1fr)}
+  .trend-box{display:none}
+  .sc-num{font-size:22px}
+  .tab{padding:10px 14px;font-size:12px}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div>
-    <div class="topbar-title">📊 CRM 诊断看板</div>
-    <div style="font-size:11px;opacity:.7;margin-top:2px">4月29日 周三 · 秋子的客户</div>
-  </div>
-  <div class="topbar-meta">
-    更新于 14:23<br>
-    共 5 个账户
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">📊 CRM 诊断看板</div>
+      <div class="header-sub">秋子的客户 · 行业一组（跨境-亚洲+中东）</div>
+    </div>
+    <div class="header-right">
+      <div class="header-time">14:27</div>
+      <div class="header-date">4月29日 周三</div>
+    </div>
   </div>
 </div>
+
+<div class="top-alert">🔴 今日有 <b>5</b> 个账户需立即处理</div>
 
 <div class="summary">
-<div class="sum-item">
-  <div class="sum-icon">🔴</div>
-  <div class="sum-num">3</div>
-  <div class="sum-label">紧急</div>
+  <div class="sc" style="border-top:3px solid #EF4444">
+  <div class="sc-num" style="color:#EF4444">3</div>
+  <div class="sc-row"><span>🔴</span><span class="sc-lbl">停投/骤降</span></div>
+</div><div class="sc" style="border-top:3px solid #3F55E0">
+  <div class="sc-num" style="color:#3F55E0">2</div>
+  <div class="sc-row"><span>⚡</span><span class="sc-lbl">撞线预警</span></div>
+</div><div class="sc" style="border-top:3px solid #F97316">
+  <div class="sc-num" style="color:#F97316">0</div>
+  <div class="sc-row"><span>🟠</span><span class="sc-lbl">重点关注</span></div>
+</div><div class="sc" style="border-top:3px solid #22C55E">
+  <div class="sc-num" style="color:#22C55E">0</div>
+  <div class="sc-row"><span>✅</span><span class="sc-lbl">正常运行</span></div>
 </div>
-<div class="sum-item">
-  <div class="sum-icon">⚡</div>
-  <div class="sum-num">2</div>
-  <div class="sum-label">撞线</div>
 </div>
-<div class="sum-item">
-  <div class="sum-icon">🟠</div>
-  <div class="sum-num">0</div>
-  <div class="sum-label">重要</div>
-</div>
-<div class="sum-item">
-  <div class="sum-icon">✅</div>
-  <div class="sum-num">0</div>
-  <div class="sum-label">正常</div>
-</div></div>
 
-<div class="content">
-<div class="section-label">🔴 需立即处理</div>
-<div class="card" style="border-left:3px solid #EF4444;background:#FEF2F2">
-  <div class="card-head">
-    <span class="dot" style="background:#EF4444"></span>
-    <span class="cname">域见旅行-酒店预订</span>
-    <span class="rate" style="color:#EF4444">-100%</span>
+<div class="tabs">
+  <div class="tab active" data-tab="urgent">🔴 今日必处理</div>
+  <div class="tab" data-tab="all">全部账户</div>
+  <div class="tab" data-tab="crash">⚡ 撞线专项</div>
+</div>
+
+<div id="tab-urgent" class="tab-content active">
+  <div class="content-wrap">
+    
+<div class="account-card" style="border-left:4px solid #EF4444;background:#FEF2F2">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">域见旅行-酒店预订</div>
+      <div class="vs-name">域而见己旅行</div>
+    </div>
+    <div class="ac-right">
+      <span class="level-badge" style="background:#EF444420;color:#EF4444">🔴 紧急停投</span>
+    </div>
   </div>
-  <div class="metrics">
-    <div><div class="mv">¥0</div><div class="ml">今日消耗</div></div>
-    <div><div class="mv">¥953</div><div class="ml">7日均值</div></div>
-    <div><div class="mv" style="color:#EF4444">-100%</div><div class="ml">日环比</div></div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥0</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥953</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#EF4444">-100%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.49;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.58;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.67;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.76;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.85;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.94;background:#EF4444"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
   </div>
-  <div class="tags"><span class="tag" style="background:#EF444418;color:#EF4444">当日停投</span></div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日停投</span></div>
   <div class="remark">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
 </div>
-<div class="card" style="border-left:3px solid #EF4444;background:#FEF2F2">
-  <div class="card-head">
-    <span class="dot" style="background:#EF4444"></span>
-    <span class="cname">ctgo</span>
-    <span class="rate" style="color:#EF4444">-100%</span>
+<div class="account-card" style="border-left:4px solid #EF4444;background:#FEF2F2">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">ctgo</div>
+      <div class="vs-name">（自投）ctgo</div>
+    </div>
+    <div class="ac-right">
+      <span class="level-badge" style="background:#EF444420;color:#EF4444">🔴 紧急停投</span>
+    </div>
   </div>
-  <div class="metrics">
-    <div><div class="mv">¥0</div><div class="ml">今日消耗</div></div>
-    <div><div class="mv">¥424</div><div class="ml">7日均值</div></div>
-    <div><div class="mv" style="color:#EF4444">-100%</div><div class="ml">日环比</div></div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥0</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥424</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#EF4444">-100%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.49;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.58;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.67;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.76;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.85;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.94;background:#EF4444"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
   </div>
-  <div class="tags"><span class="tag" style="background:#EF444418;color:#EF4444">当日停投</span></div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日停投</span></div>
   <div class="remark">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
 </div>
-<div class="card" style="border-left:3px solid #EF4444;background:#FEF2F2">
-  <div class="card-head">
-    <span class="dot" style="background:#EF4444"></span>
-    <span class="cname">Rigel 锐佳卫浴</span>
-    <span class="rate" style="color:#EF4444">-100%</span>
+<div class="account-card" style="border-left:4px solid #EF4444;background:#FEF2F2">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">Rigel 锐佳卫浴</div>
+      <div class="vs-name">NX-Rigel 锐佳卫浴</div>
+    </div>
+    <div class="ac-right">
+      <span class="level-badge" style="background:#EF444420;color:#EF4444">🔴 紧急停投</span>
+    </div>
   </div>
-  <div class="metrics">
-    <div><div class="mv">¥0</div><div class="ml">今日消耗</div></div>
-    <div><div class="mv">¥351</div><div class="ml">7日均值</div></div>
-    <div><div class="mv" style="color:#EF4444">-100%</div><div class="ml">日环比</div></div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥0</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥351</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#EF4444">-100%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.49;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.58;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.67;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.76;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.85;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.94;background:#EF4444"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
   </div>
-  <div class="tags"><span class="tag" style="background:#EF444418;color:#EF4444">当日停投</span></div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日停投</span></div>
   <div class="remark">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
-</div><div class="section-label">⚡ 撞线预警</div>
-<div class="card" style="border-left:3px solid #3F55E0;background:#EEF0FC">
-  <div class="card-head">
-    <span class="dot" style="background:#3F55E0"></span>
-    <span class="cname">ONE DAY MASTER泰服泰妆写真馆</span>
-    <span class="rate" style="color:#22C55E">+210%</span>
+</div>
+<div class="account-card" style="border-left:4px solid #3F55E0;background:#EEF0FC">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">ONE DAY MASTER泰服泰妆写真馆</div>
+      <div class="vs-name">微亿璀璨（ONE DAY MASTER泰服泰妆写真馆）2</div>
+    </div>
+    <div class="ac-right">
+      <span class="level-badge" style="background:#3F55E020;color:#3F55E0">⚡ 撞线预警</span>
+    </div>
   </div>
-  <div class="metrics">
-    <div><div class="mv">¥506</div><div class="ml">今日消耗</div></div>
-    <div><div class="mv">¥1,197</div><div class="ml">7日均值</div></div>
-    <div><div class="mv" style="color:#22C55E">+210%</div><div class="ml">日环比</div></div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥506</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥1,197</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#22C55E">+210%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.49;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.58;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.67;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.76;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.85;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.94;background:#3F55E0"></div><div class="bar today-bar" style="height:30px;background:#3F55E0"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
   </div>
-  <div class="tags"><span class="tag" style="background:#3F55E018;color:#3F55E0">当日预算撞线</span></div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日预算撞线</span></div>
   <div class="remark">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
 </div>
-<div class="card" style="border-left:3px solid #3F55E0;background:#EEF0FC">
-  <div class="card-head">
-    <span class="dot" style="background:#3F55E0"></span>
-    <span class="cname">Soneva</span>
-    <span class="rate" style="color:#22C55E">+0%</span>
+<div class="account-card" style="border-left:4px solid #3F55E0;background:#EEF0FC">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">Soneva</div>
+      <div class="vs-name">辰以拾（Soneva）</div>
+    </div>
+    <div class="ac-right">
+      <span class="level-badge" style="background:#3F55E020;color:#3F55E0">⚡ 撞线预警</span>
+    </div>
   </div>
-  <div class="metrics">
-    <div><div class="mv">¥921</div><div class="ml">今日消耗</div></div>
-    <div><div class="mv">¥917</div><div class="ml">7日均值</div></div>
-    <div><div class="mv" style="color:#22C55E">+0%</div><div class="ml">日环比</div></div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥921</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥917</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#22C55E">+0%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.49;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.58;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.67;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.76;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.85;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.94;background:#3F55E0"></div><div class="bar today-bar" style="height:44px;background:#3F55E0"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
   </div>
-  <div class="tags"><span class="tag" style="background:#3F55E018;color:#3F55E0">当日预算撞线</span></div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日预算撞线</span></div>
   <div class="remark">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
 </div>
+  </div>
 </div>
 
-<div class="footer">数据来源：CRM 苍穹实时 · 2026-04-29 14:23</div>
+<div id="tab-all" class="tab-content">
+  <div class="content-wrap">
+    <div class="group-label" style="border-left:3px solid #EF4444">🔴 停投 / 骤降（3）</div>
+<div class="account-card" style="border-left:4px solid #EF4444;background:#FEF2F2">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">域见旅行-酒店预订</div>
+      <div class="vs-name">域而见己旅行</div>
+    </div>
+    <div class="ac-right">
+      
+    </div>
+  </div>
 
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥0</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥953</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#EF4444">-100%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.49;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.58;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.67;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.76;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.85;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.94;background:#EF4444"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
+  </div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日停投</span></div>
+  <div class="remark">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
+</div>
+<div class="account-card" style="border-left:4px solid #EF4444;background:#FEF2F2">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">ctgo</div>
+      <div class="vs-name">（自投）ctgo</div>
+    </div>
+    <div class="ac-right">
+      
+    </div>
+  </div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥0</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥424</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#EF4444">-100%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.49;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.58;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.67;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.76;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.85;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.94;background:#EF4444"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
+  </div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日停投</span></div>
+  <div class="remark">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
+</div>
+<div class="account-card" style="border-left:4px solid #EF4444;background:#FEF2F2">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">Rigel 锐佳卫浴</div>
+      <div class="vs-name">NX-Rigel 锐佳卫浴</div>
+    </div>
+    <div class="ac-right">
+      
+    </div>
+  </div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥0</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥351</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#EF4444">-100%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.49;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.58;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.67;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.76;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.85;background:#EF4444"></div><div class="bar" style="height:44px;opacity:0.94;background:#EF4444"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
+  </div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日停投</span></div>
+  <div class="remark">账户近7日每日均有竞价消耗，截至最新数据产出时段今日消耗为0、且昨日同期消耗>0</div>
+</div><div class="group-label" style="border-left:3px solid #3F55E0">⚡ 撞线预警（2）</div>
+<div class="account-card" style="border-left:4px solid #3F55E0;background:#EEF0FC">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">ONE DAY MASTER泰服泰妆写真馆</div>
+      <div class="vs-name">微亿璀璨（ONE DAY MASTER泰服泰妆写真馆）2</div>
+    </div>
+    <div class="ac-right">
+      
+    </div>
+  </div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥506</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥1,197</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#22C55E">+210%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.49;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.58;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.67;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.76;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.85;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.94;background:#3F55E0"></div><div class="bar today-bar" style="height:30px;background:#3F55E0"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
+  </div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日预算撞线</span></div>
+  <div class="remark">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+</div>
+<div class="account-card" style="border-left:4px solid #3F55E0;background:#EEF0FC">
+  <div class="ac-head">
+    <div class="ac-left">
+      <div class="ac-name">Soneva</div>
+      <div class="vs-name">辰以拾（Soneva）</div>
+    </div>
+    <div class="ac-right">
+      
+    </div>
+  </div>
+
+  <div class="ac-metrics">
+    <div class="metric-box">
+      <div class="metric-val">¥921</div>
+      <div class="metric-lbl">今日消耗</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val">¥917</div>
+      <div class="metric-lbl">7日均值</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-val" style="color:#22C55E">+0%</div>
+      <div class="metric-lbl">日环比</div>
+    </div>
+    <div class="metric-box trend-box">
+      <div class="mini-bars"><div class="bar" style="height:44px;opacity:0.40;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.49;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.58;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.67;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.76;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.85;background:#3F55E0"></div><div class="bar" style="height:44px;opacity:0.94;background:#3F55E0"></div><div class="bar today-bar" style="height:44px;background:#3F55E0"></div></div>
+      <div class="metric-lbl">7日趋势</div>
+    </div>
+  </div>
+
+  <div class="tag-row"><span class="tag" style="background:#EC5F6218;color:#EC5F62">当日预算撞线</span></div>
+  <div class="remark">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+</div>
+  </div>
+</div>
+
+<div id="tab-crash" class="tab-content">
+  <div class="content-wrap">
+    
+<div class="crash-card">
+  <div class="crash-head">
+    <span class="crash-icon">⚡</span>
+    <span class="crash-name">ONE DAY MASTER泰服泰妆写真馆</span>
+  </div>
+  <div class="crash-desc">今日消耗 <b>¥506</b>，日均 <b>¥1,197</b>，消耗已达日均 <b>42%</b></div>
+  <div class="crash-bar-wrap"><div class="crash-bar-fill" style="width:42%"></div></div>
+  <div class="crash-remark">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+</div>
+<div class="crash-card">
+  <div class="crash-head">
+    <span class="crash-icon">⚡</span>
+    <span class="crash-name">Soneva</span>
+  </div>
+  <div class="crash-desc">今日消耗 <b>¥921</b>，日均 <b>¥917</b>，消耗已达日均 <b>100%</b></div>
+  <div class="crash-bar-wrap"><div class="crash-bar-fill" style="width:100%"></div></div>
+  <div class="crash-remark">该子账户当日预算撞线（预算利用率超出100%），且前7日日均消耗>0。统计截至最新数据产出时段</div>
+</div>
+  </div>
+</div>
+
+<div class="footer">数据来源：CRM 苍穹实时 · 最后更新 2026-04-29 14:27<br>每日 09:00 自动刷新</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
 </body>
 </html>
